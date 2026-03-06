@@ -1,0 +1,1574 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Validação e Qualidade na Sprint — App Meu Deputado</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+.site-nav {
+  border-bottom: 1px solid #d8d5ce;
+  padding: 0 48px;
+  background: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 0;
+}
+.site-nav-home {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  padding: 14px 0;
+  margin-right: 32px;
+  border-right: 1px solid #d8d5ce;
+  padding-right: 32px;
+  gap: 10px;
+}
+.site-nav-home-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #1a3a5c;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.site-nav-home:hover .site-nav-home-label { text-decoration: underline; }
+.site-nav-links {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  flex: 1;
+}
+.site-nav-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  padding: 0 16px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #888888;
+  border-bottom: 2px solid transparent;
+  transition: color 0.12s ease, border-color 0.12s ease;
+  white-space: nowrap;
+}
+.site-nav-link:hover { color: #1a3a5c; }
+.site-nav-link.active { color: #1a3a5c; border-bottom-color: #1a3a5c; }
+.site-nav-tag {
+  display: inline-block;
+  padding: 2px 6px;
+  background: #e8eef4;
+  color: #1a3a5c;
+  border-radius: 2px;
+  font-size: 8px;
+  margin-left: 6px;
+  letter-spacing: 0.08em;
+}
+@media (max-width: 768px) {
+  .site-nav { padding: 0 16px; overflow-x: auto; }
+  .site-nav-link { padding: 0 10px; font-size: 9px; }
+  .site-nav-tag { display: none; }
+}
+</style>
+<style>
+  :root {
+    --bg: #f5f4f0;
+    --white: #ffffff;
+    --ink: #1a1a1a;
+    --ink-mid: #444444;
+    --ink-light: #888888;
+    --rule: #d8d5ce;
+    --accent: #1a3a5c;
+    --accent-mid: #2e5f8a;
+    --accent-light: #e8eef4;
+    --must: #1a3a5c;
+    --should: #4a6741;
+    --could: #7a5c32;
+    --pass: #2e7d32;
+    --pass-bg: #f0f5ee;
+    --pass-border: #aec4ab;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* ── Slide container ── */
+  .deck { max-width: 1100px; margin: 0 auto; padding: 0 0 80px; }
+
+  /* ── Individual slides ── */
+  .slide {
+    padding: 56px 48px 52px;
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .slide.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .slide:last-child { border-bottom: none; }
+
+  /* ── Slide number badge ── */
+  .slide-num {
+    position: absolute;
+    top: 20px;
+    right: 48px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--ink-light);
+    text-transform: uppercase;
+  }
+
+  /* ── Top bar ── */
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--ink);
+    margin-bottom: 48px;
+  }
+
+  .topbar-left {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-light);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .topbar-right {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 13px;
+    color: var(--accent);
+    font-style: italic;
+  }
+
+  /* ── Section label ── */
+  .section-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  /* ── Hero ── */
+  .hero-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 14px;
+  }
+
+  .hero h1 {
+    font-family: 'Libre Baskerville', serif;
+    font-size: clamp(34px, 4.5vw, 56px);
+    font-weight: 700;
+    line-height: 1.08;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-tagline {
+    font-size: 15px;
+    color: var(--ink-mid);
+    max-width: 560px;
+    margin-top: 20px;
+    line-height: 1.75;
+  }
+
+  /* ── Slide title ── */
+  .slide-title {
+    font-family: 'Libre Baskerville', serif;
+    font-size: clamp(24px, 3vw, 36px);
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.15;
+    margin-bottom: 8px;
+  }
+
+  .slide-subtitle {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 32px;
+  }
+
+  /* ── Two-column layout ── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+  }
+
+  .col-panel {
+    background: var(--white);
+    padding: 36px 40px;
+  }
+
+  .col-panel.dark {
+    background: var(--accent);
+    color: white;
+  }
+
+  /* ── Big quote ── */
+  .big-quote {
+    font-family: 'Libre Baskerville', serif;
+    font-size: clamp(28px, 3.5vw, 44px);
+    font-weight: 700;
+    line-height: 1.18;
+    color: white;
+  }
+
+  /* ── XP Values diagram ── */
+  .xp-values {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .xp-values-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 4px;
+  }
+
+  .xp-pentagon {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto auto;
+    gap: 12px;
+    padding: 20px 0;
+  }
+
+  .xp-node {
+    border-radius: 50%;
+    width: 96px;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    background: var(--white);
+    border: 3px solid;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+
+  .xp-node.comm  { border-color: #d4a800; color: #7a5c00; grid-column: 2; }
+  .xp-node.simpl { border-color: var(--should); color: var(--should); grid-column: 3; }
+  .xp-node.feed  { border-color: #c0392b; color: #c0392b; }
+  .xp-node.cour  { border-color: var(--accent); color: var(--accent); }
+  .xp-node.resp  { border-color: #555555; color: #555555; grid-column: 1; grid-row: 2; }
+
+  .xp-bullets { margin-top: 16px; }
+
+  .xp-bullet {
+    display: flex;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--rule);
+    font-size: 13px;
+    color: var(--ink-mid);
+    line-height: 1.6;
+  }
+
+  .xp-bullet:last-child { border-bottom: none; }
+  .xp-bullet strong { color: var(--accent); font-weight: 600; }
+  .xp-bullet-icon { font-size: 14px; flex-shrink: 0; margin-top: 2px; }
+
+  /* ── Story card ── */
+  .story-card {
+    background: var(--white);
+    border: 1px solid var(--rule);
+    padding: 32px 36px;
+    position: relative;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+
+  .story-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 5px;
+    background: var(--accent);
+  }
+
+  .story-badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    align-items: center;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 2px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .badge-must   { background: #e8edf3; color: var(--must); border: 1px solid #c0cfde; }
+  .badge-epic   { background: var(--accent-light); color: var(--accent); border: 1px solid #b0c8de; }
+  .badge-id     { background: transparent; color: var(--ink-light); border: 1px solid var(--rule); margin-left: auto; }
+  .badge-status { background: #fffbea; color: #7a5c00; border: 1px solid #d4c07a; }
+
+  .story-label {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+
+  .story-text {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--ink-mid);
+  }
+
+  /* ── Criteria grid ── */
+  .criteria-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin-top: 28px;
+  }
+
+  .criterion {
+    background: var(--white);
+    padding: 28px;
+    position: relative;
+  }
+
+  .criterion::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+  }
+
+  .criterion.c1::before { background: var(--must); }
+  .criterion.c2::before { background: var(--should); }
+  .criterion.c3::before { background: var(--could); }
+
+  .criterion-num {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .c1 .criterion-num { color: var(--must); }
+  .c2 .criterion-num { color: var(--should); }
+  .c3 .criterion-num { color: var(--could); }
+
+  .criterion-icon { font-size: 22px; margin-bottom: 10px; display: block; }
+
+  .criterion-title {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+
+  .criterion p {
+    font-size: 13px;
+    color: var(--ink-mid);
+    line-height: 1.65;
+  }
+
+  /* ── Phone mockup ── */
+  .mockup-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 8px 0;
+  }
+
+  .phone {
+    width: 240px;
+    border-radius: 24px;
+    background: var(--accent);
+    padding: 10px;
+    box-shadow: 0 12px 36px rgba(26,58,92,0.22);
+    position: relative;
+  }
+
+  .phone-screen {
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--white);
+  }
+
+  .phone-header {
+    background: var(--accent);
+    padding: 10px 14px 8px;
+    color: white;
+  }
+
+  .phone-header-name {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .phone-header-sub {
+    font-size: 9px;
+    color: rgba(255,255,255,0.6);
+    margin-top: 1px;
+    font-family: 'IBM Plex Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+
+  .phone-body { padding: 10px 12px 14px; }
+
+  .phone-search {
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 9.5px;
+    color: var(--ink-light);
+    margin-bottom: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .phone-count {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 6px;
+    padding: 4px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .phone-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    border-bottom: 1px solid #f0eeea;
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+
+  .phone-row:hover { background: var(--accent-light); margin: 0 -12px; padding-left: 12px; padding-right: 12px; }
+  .phone-row:last-child { border-bottom: none; }
+
+  .phone-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--accent-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    font-weight: 500;
+    color: var(--accent);
+    flex-shrink: 0;
+    border: 1px solid var(--rule);
+  }
+
+  .phone-deputy-info { flex: 1; min-width: 0; }
+
+  .phone-deputy-name {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .phone-deputy-meta {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    margin-top: 2px;
+  }
+
+  .party-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 7.5px;
+    padding: 1px 5px;
+    border-radius: 2px;
+    font-weight: 500;
+    color: white;
+  }
+
+  .state-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    color: var(--ink-light);
+  }
+
+  .phone-chevron { font-size: 12px; color: var(--ink-light); }
+
+  /* ── CT slides layout ── */
+  .ct-layout {
+    display: grid;
+    grid-template-columns: 1fr 260px;
+    gap: 40px;
+    align-items: start;
+  }
+
+  .ct-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    color: var(--accent-mid);
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+
+  .ct-blocks { display: flex; flex-direction: column; gap: 12px; margin-top: 28px; }
+
+  .ct-block {
+    background: var(--white);
+    border: 1px solid var(--rule);
+    padding: 18px 22px;
+    position: relative;
+  }
+
+  .ct-block::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    background: var(--accent-mid);
+  }
+
+  .ct-block.status-pass::before { background: var(--pass); }
+  .ct-block.status-pass { background: var(--pass-bg); border-color: var(--pass-border); }
+
+  .ct-block-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 7px;
+  }
+
+  .ct-block-text {
+    font-size: 13.5px;
+    color: var(--ink);
+    line-height: 1.65;
+  }
+
+  .pass-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--pass);
+    color: white;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 5px 14px;
+    border-radius: 2px;
+    margin-top: 6px;
+  }
+
+  /* ── CT-04 exception phone ── */
+  .phone-search.highlight-err {
+    background: #fff8f8;
+    border-color: #c0392b;
+    color: var(--ink);
+  }
+
+  .phone-empty {
+    padding: 20px 0 12px;
+    text-align: center;
+  }
+
+  .phone-empty-icon {
+    font-size: 36px;
+    margin-bottom: 8px;
+    opacity: 0.35;
+  }
+
+  .phone-empty-text {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 9.5px;
+    color: var(--ink-light);
+    line-height: 1.5;
+  }
+
+  .empty-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 7px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-top: 8px;
+    border-top: 1px dashed var(--rule);
+    padding-top: 8px;
+  }
+
+  /* ── Kanban board ── */
+  .kanban {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin-top: 28px;
+  }
+
+  .kanban-col { background: var(--white); }
+
+  .kanban-col.focus { background: var(--accent-light); outline: 2px solid var(--accent-mid); }
+
+  .kanban-header {
+    padding: 10px 14px;
+    background: #e8e8e6;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .kanban-col.focus .kanban-header {
+    background: var(--accent);
+    color: white;
+  }
+
+  .kanban-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.6;
+    margin-bottom: 2px;
+  }
+
+  .kanban-body { padding: 12px; display: flex; flex-direction: column; gap: 6px; min-height: 120px; }
+
+  .kanban-card {
+    padding: 8px 10px;
+    border-radius: 2px;
+    border: 1px solid var(--rule);
+    font-size: 10px;
+    color: var(--ink-mid);
+    background: var(--white);
+  }
+
+  .kanban-card.yellow { border-color: #d4a800; background: #fffbea; color: #7a5c00; }
+  .kanban-card.blue { border-color: #b0c8de; background: var(--accent-light); color: var(--accent); }
+  .kanban-card.focus { outline: 1px dashed var(--accent-mid); }
+
+  .kanban-cycle {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    color: var(--accent-mid);
+    padding: 6px 0 2px;
+    border-top: 1px solid var(--rule);
+    margin-top: 8px;
+  }
+
+  .kanban-info-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-top: none;
+  }
+
+  .kanban-info {
+    background: var(--white);
+    padding: 20px 24px;
+  }
+
+  .kanban-info-title {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+
+  .kanban-info p {
+    font-size: 12px;
+    color: var(--ink-mid);
+    line-height: 1.65;
+  }
+
+  /* ── Final verdict ── */
+  .verdict-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin-top: 28px;
+  }
+
+  .verdict-list {
+    background: var(--white);
+    padding: 0;
+  }
+
+  .verdict-item {
+    padding: 22px 32px;
+    border-bottom: 1px solid var(--rule);
+    font-size: 13.5px;
+    color: var(--ink-mid);
+    line-height: 1.7;
+    position: relative;
+    padding-left: 52px;
+  }
+
+  .verdict-item:last-child { border-bottom: none; }
+
+  .verdict-item::before {
+    content: '✓';
+    position: absolute;
+    left: 24px;
+    top: 22px;
+    font-size: 14px;
+    color: var(--pass);
+    font-weight: 700;
+  }
+
+  .verdict-item.next::before { content: '→'; color: var(--accent-mid); }
+
+  .verdict-stamp {
+    background: var(--accent-light);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    gap: 16px;
+  }
+
+  .stamp {
+    border: 4px solid var(--pass);
+    padding: 18px 28px;
+    text-align: center;
+    transform: rotate(-2deg);
+  }
+
+  .stamp-text {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--pass);
+    line-height: 1.15;
+    letter-spacing: 0.03em;
+  }
+
+  .stamp-sub {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--pass);
+    margin-top: 6px;
+    opacity: 0.7;
+  }
+
+  .score-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--pass);
+    letter-spacing: 0.08em;
+  }
+
+  .score-dots {
+    display: flex;
+    gap: 4px;
+  }
+
+  .score-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--pass);
+  }
+
+  /* ── Stats row ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin-top: 28px;
+  }
+
+  .stat-cell { background: var(--white); padding: 22px 26px; }
+
+  .stat-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 6px;
+  }
+
+  .stat-number {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .stat-sub { margin-top: 4px; font-size: 11px; color: var(--ink-light); }
+
+  /* ── Overview grid ── */
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+  }
+
+  .overview-card {
+    background: var(--white);
+    padding: 24px 28px;
+  }
+
+  .overview-card-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 10px;
+  }
+
+  .overview-card-title {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .overview-card p { font-size: 12.5px; color: var(--ink-mid); line-height: 1.7; }
+
+  /* ── TOC nav ── */
+  .toc {
+    position: fixed;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 100;
+  }
+
+  .toc-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 1.5px solid var(--accent-mid);
+    background: transparent;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+  }
+
+  .toc-dot:hover, .toc-dot.active { background: var(--accent); border-color: var(--accent); transform: scale(1.3); }
+
+  /* ── Footer ── */
+  footer {
+    padding: 20px 48px;
+    border-top: 2px solid var(--ink);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 0 0 0;
+  }
+
+  .footer-left {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-light);
+  }
+
+  .footer-right {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  /* ── Divider ── */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 16px 0 32px;
+  }
+
+  .divider-line { flex: 1; height: 1px; background: var(--rule); }
+
+  .divider-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    white-space: nowrap;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 780px) {
+    .slide { padding: 36px 24px 36px; }
+    .ct-layout { grid-template-columns: 1fr; }
+    .two-col { grid-template-columns: 1fr; }
+    .criteria-grid { grid-template-columns: 1fr; }
+    .kanban { grid-template-columns: repeat(2, 1fr); }
+    .kanban-info-row { grid-template-columns: 1fr; }
+    .verdict-layout { grid-template-columns: 1fr; }
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .toc { display: none; }
+    .phone { width: 200px; }
+  }
+</style>
+</head>
+<script>
+  // Highlight the active nav link based on current filename
+  const page = window.location.pathname.split('/').pop();
+  document.querySelectorAll('.site-nav-link').forEach(link => {
+    if (link.getAttribute('href') === page) link.classList.add('active');
+  });
+</script>
+<body>
+  <nav class="site-nav">
+  <a class="site-nav-home" href="index.html">
+    <span class="site-nav-home-label">← Meu Deputado</span>
+  </a>
+  <div class="site-nav-links">
+    <a class="site-nav-link" href="po.html" data-nav="po">Product Owner <span class="site-nav-tag">PO</span></a>
+    <a class="site-nav-link" href="scrum_master.html" data-nav="sm">Scrum Master <span class="site-nav-tag">SM</span></a>
+    <a class="site-nav-link" href="back_end.html" data-nav="backend">Back-end <span class="site-nav-tag">Dev 1</span></a>
+    <a class="site-nav-link" href="front_end.html" data-nav="frontend">Front-end <span class="site-nav-tag">Dev 2</span></a>
+    <a class="site-nav-link" href="qa.html" data-nav="qa">Qualidade <span class="site-nav-tag">Dev 3</span></a>
+    <a class="site-nav-link" href="kanban.html" data-nav="kanban">Kanban <span class="site-nav-tag">Dev 4</span></a>
+  </div>
+</nav>
+
+<!-- Table of contents dots -->
+<nav class="toc" id="toc" aria-label="Navegação por slides"></nav>
+
+<div class="deck">
+
+  <!-- ════════════ SLIDE 1 — TITLE ════════════ -->
+  <section class="slide" id="slide-1" data-label="Título">
+    <div class="topbar">
+      <div class="topbar-left">UNDB · Dev 3 · Testes e Qualidade · Desafio 4.0</div>
+      <div class="topbar-right">Simulação Scrum / Extreme Programming (XP)</div>
+    </div>
+
+    <div class="hero">
+      <div class="hero-label">Relatório de Testes e Critérios de Aceitação</div>
+      <h1>Validação e Qualidade<br>na Sprint: <em>App Meu Deputado</em></h1>
+      <p class="hero-tagline">
+        Documento de Garantia de Qualidade (QA) referente à Sprint de Busca e Listagem de Parlamentares — validação dos Critérios de Aceitação e entrega do Definition of Done.
+      </p>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-cell">
+        <div class="stat-label">Story</div>
+        <div class="stat-number" style="color:var(--accent)">101</div>
+        <div class="stat-sub">busca de parlamentares</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">Casos de Teste</div>
+        <div class="stat-number" style="color:var(--accent)">4</div>
+        <div class="stat-sub">CT-01 a CT-04</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">Resultado</div>
+        <div class="stat-number" style="color:var(--pass)">4/4</div>
+        <div class="stat-sub">passou em todos os CTs</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">Status Final</div>
+        <div class="stat-number" style="color:var(--pass); font-size:18px; padding-top:6px">READY FOR<br>RELEASE</div>
+        <div class="stat-sub">definition of done cumprido</div>
+      </div>
+    </div>
+
+    <div class="slide-num">01 / 11</div>
+  </section>
+
+  <!-- ════════════ SLIDE 2 — XP VALUES ════════════ -->
+  <section class="slide" id="slide-2" data-label="Filosofia XP">
+    <div class="slide-subtitle">Papel do Dev 3 — Testes e Qualidade</div>
+    <div class="two-col">
+      <div class="col-panel dark">
+        <p class="big-quote">A qualidade<br>não é<br>opcional,<br>é obrigatória</p>
+        <p style="margin-top:28px; font-size:13px; color:rgba(255,255,255,0.65); line-height:1.7">
+          O papel do Dev 3 vai além de achar bugs; é sobre garantir o alinhamento com os Princípios do Extreme Programming (XP).
+        </p>
+      </div>
+      <div class="col-panel">
+        <div class="xp-values">
+          <div>
+            <div class="xp-values-label">XP Values Matrix — Dev 3 Focus</div>
+            <div class="xp-pentagon">
+              <div class="xp-node comm">Comunicação</div>
+              <div class="xp-node simpl">Simplicidade</div>
+              <div class="xp-node resp">Respeito</div>
+              <div class="xp-node cour">Coragem</div>
+              <div class="xp-node feed" style="grid-column:3">Feedback</div>
+            </div>
+          </div>
+          <div class="xp-bullets">
+            <div class="xp-bullet">
+              <span class="xp-bullet-icon">⏱</span>
+              <span><strong>Feedback Rápido:</strong> Testar continuamente para fornecer dados imediatos ao Dev 1 (Back-end) e Dev 2 (Front-end).</span>
+            </div>
+            <div class="xp-bullet">
+              <span class="xp-bullet-icon">⇄</span>
+              <span><strong>Mudança Incremental:</strong> Garantir que a nova interface entregue valor sem quebrar o que já funciona.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-num">02 / 11</div>
+  </section>
+
+  <!-- ════════════ SLIDE 3 — USER STORY ════════════ -->
+  <section class="slide" id="slide-3" data-label="User Story">
+    <div class="slide-subtitle">STORY-101 · Status: IN PROGRESS</div>
+    <h2 class="slide-title">O Foco da Sprint: Busca e Listagem de Parlamentares</h2>
+
+    <div class="divider">
+      <div class="divider-line"></div>
+      <div class="divider-label">Épico: Transparência e Acompanhamento Político</div>
+      <div class="divider-line"></div>
+    </div>
+
+    <div class="story-card">
+      <div class="story-badges">
+        <span class="badge badge-must">Prioridade: Alta (MoSCoW: Must-Have)</span>
+        <span class="badge badge-epic">Épico: Transparência e Acompanhamento Político</span>
+        <span class="badge badge-id">STORY-101</span>
+        <span class="badge badge-status">IN PROGRESS</span>
+      </div>
+      <div class="story-label">História de Usuário (User Story):</div>
+      <p class="story-text">
+        "Como eleitor, eu quero buscar por nome, partido ou estado, para que eu possa localizar e acompanhar o trabalho do meu deputado rapidamente."
+      </p>
+    </div>
+
+    <div class="slide-num">03 / 11</div>
+  </section>
+
+  <!-- ════════════ SLIDE 4 — ACCEPTANCE CRITERIA ════════════ -->
+  <section class="slide" id="slide-4" data-label="Critérios">
+    <div class="slide-subtitle">Definition of Done · Critérios de Aceitação</div>
+    <h2 class="slide-title">Estabelecendo os Critérios de Aceitação</h2>
+    <p style="font-size:14px; color:var(--ink-mid); margin-top:8px; max-width:680px; line-height:1.7">
+      Para considerarmos a história Pronta (Definition of Done), a interface deve passar nos seguintes Critérios de Aceitação:
+    </p>
+
+    <div class="criteria-grid">
+      <div class="criterion c1">
+        <div class="criterion-num">01</div>
+        <span class="criterion-icon">🔍</span>
+        <div class="criterion-title">Mecanismo de Busca</div>
+        <p>O campo deve filtrar resultados digitando nome, sigla do partido ou estado.</p>
+      </div>
+      <div class="criterion c2">
+        <div class="criterion-num">02</div>
+        <span class="criterion-icon">🪪</span>
+        <div class="criterion-title">Renderização de Dados</div>
+        <p>A lista deve exibir corretamente a foto (ou iniciais), nome completo, partido e estado de cada deputado.</p>
+      </div>
+      <div class="criterion c3">
+        <div class="criterion-num">03</div>
+        <span class="criterion-icon">👆</span>
+        <div class="criterion-title">Interação e Roteamento</div>
+        <p>Tocar no card de um deputado deve direcionar o usuário para a tela de perfil detalhado.</p>
+      </div>
+    </div>
+
+    <div class="slide-num">04 / 11</div>
+  </section>
+
+  <!-- ════════════ SLIDE 5 — HOMOLOGATION ENV ════════════ -->
+  <section class="slide" id="slide-5" data-label="Ambiente">
+    <div class="slide-subtitle">Interface de Homologação</div>
+    <h2 class="slide-title">O Ambiente de Teste</h2>
+
+    <div class="two-col" style="margin-top:28px">
+      <div class="col-panel">
+        <div class="section-title" style="margin-bottom:24px">Artefato gerado pelo Dev 2 (Front-end)</div>
+        <div class="overview-grid" style="grid-template-columns:1fr; border:none; gap:0; background:transparent">
+          <div style="padding:16px 0; border-bottom:1px solid var(--rule)">
+            <div style="font-size:13px; color:var(--ink-mid); line-height:1.7"><strong style="color:var(--ink)">Hierarquia visual clara</strong> — navegação simples e escaneabilidade rápida da lista.</div>
+          </div>
+          <div style="padding:16px 0; border-bottom:1px solid var(--rule)">
+            <div style="font-size:13px; color:var(--ink-mid); line-height:1.7"><strong style="color:var(--ink)">Base para execução</strong> dos Casos de Teste (CTs) planejados.</div>
+          </div>
+          <div style="padding:16px 0">
+            <div style="font-size:13px; color:var(--ink-mid); line-height:1.7">Foco em <strong style="color:var(--ink)">feedback visual imediato</strong>: estado de loading, estado vazio e contagem dinâmica de resultados.</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-panel" style="display:flex; justify-content:center; align-items:center; background:#f0f4f8">
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="phone-header">
+              <div class="phone-header-name">🏛 Meu Deputado</div>
+              <div class="phone-header-sub">ACOMPANHE O MANDATO</div>
+            </div>
+            <div class="phone-body">
+              <div style="font-size:9px; color:var(--ink-mid); margin-bottom:8px; line-height:1.5">Selecione o deputado que você votou para acompanhar o trabalho dele.</div>
+              <div class="phone-search">🔍 Buscar por nome, partido ou estado...</div>
+              <div class="phone-count">6 deputados encontrados</div>
+              <div class="phone-row"><div class="phone-avatar">AP</div><div class="phone-deputy-info"><div class="phone-deputy-name">Ana Paula Silva</div><div class="phone-deputy-meta"><span class="party-tag" style="background:#8b0000">PT</span><span class="state-tag">SP</span></div></div><span class="phone-chevron">›</span></div>
+              <div class="phone-row"><div class="phone-avatar">CE</div><div class="phone-deputy-info"><div class="phone-deputy-name">Carlos Eduardo Mendes</div><div class="phone-deputy-meta"><span class="party-tag" style="background:#002868">PL</span><span class="state-tag">RJ</span></div></div><span class="phone-chevron">›</span></div>
+              <div class="phone-row"><div class="phone-avatar">MF</div><div class="phone-deputy-info"><div class="phone-deputy-name">Maria Fernanda Costa</div><div class="phone-deputy-meta"><span class="party-tag" style="background:#2e6b2e">MDB</span><span class="state-tag">MG</span></div></div><span class="phone-chevron">›</span></div>
+              <div class="phone-row"><div class="phone-avatar">RA</div><div class="phone-deputy-info"><div class="phone-deputy-name">Roberto Almeida Neto</div><div class="phone-deputy-meta"><span class="party-tag" style="background:#0055a5">PSDB</span><span class="state-tag">PR</span></div></div><span class="phone-chevron">›</span></div>
+              <div class="phone-row"><div class="phone-avatar">JB</div><div class="phone-deputy-info"><div class="phone-deputy-name">Juliana Borges</div><div class="phone-deputy-meta"><span class="party-tag" style="background:#e07000">PSOL</span><span class="state-tag">BA</span></div></div><span class="phone-chevron">›</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-num">05 / 11</div>
+  </section>
+
+  <!-- ════════════ SLIDE 6 — CT-01 ════════════ -->
+  <section class="slide" id="slide-6" data-label="CT-01">
+    <div class="ct-layout">
+      <div>
+        <div class="ct-tag">CT-01</div>
+        <h2 class="slide-title">Validação do Motor de Busca Integrado</h2>
+
+        <div class="ct-blocks">
+          <div class="ct-block">
+            <div class="ct-block-label">Ação Simulada</div>
+            <div class="ct-block-text">Inserir a string <strong>SP</strong> ou <strong>Ana Paula</strong> no campo de busca em tempo real.</div>
+          </div>
+          <div class="ct-block">
+            <div class="ct-block-label">Resultado Esperado</div>
+            <div class="ct-block-text">O sistema deve consultar o Back-end (Dev 1) e atualizar a contagem (<em>6 | DEPUTADOS ENCONTRADOS</em>) em tempo real.</div>
+          </div>
+          <div class="ct-block status-pass">
+            <div class="ct-block-label">Status</div>
+            <div class="ct-block-text">O componente aceita o input e respeita os estados de loading.</div>
+            <div class="pass-pill">✓ PASSOU</div>
+          </div>
+        </div>
+      </div>
+      <div class="mockup-wrap">
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="phone-header">
+              <div class="phone-header-name">🏛 Meu Deputado</div>
+              <div class="phone-header-sub">ACOMPANHE O MANDATO</div>
+            </div>
+            <div class="phone-body">
+              <div class="phone-search" style="background:#f0fff4; border-color:var(--pass); color:var(--ink)">🔍 SP ou Ana Paula...</div>
+              <div class="phone-count" style="color:var(--pass); font-weight:600">6 DEPUTADOS ENCONTRADOS ✓</div>
+              <div class="phone-row"><div class="phone-avatar">AP</div><div class="phone-deputy-info"><div class="phone-deputy-name">Ana Paula Silva</div><div class="phone-deputy-meta"><span class="party-tag" style="background:#8b0000">PT</span><span class="state-tag">SP</span></div></div><span class="phone-chevron">›</span></div>
+              <div class="phone-row"><div class="phone-avatar">CE</div><div class="phone-deputy-info"><div class="phone-deputy-name">Carlos Eduardo Mendes</div><div class="phone-deputy-meta"><span class="party-tag" style="background:#002868">PL</span><span class="state-tag">RJ</span></div></div><span class="phone-chevron">›</span></div>
+              <div class="phone-row"><div class="phone-avatar">MF</div><div class="phone-deputy-info"><div class="phone-deputy-name">Maria Fernanda Costa</div><div class="phone-deputy-meta"><span class="party-tag" style="background:#2e6b2e">MDB</span><span class="state-tag">MG</span></div></div><span class="phone-chevron">›</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-num">06 / 11</div>
+  </section>
+
+  <!-- ════════════ SLIDE 7 — CT-02 ════════════ -->
+  <section class="slide" id="slide-7" data-label="CT-02">
+    <div class="ct-layout">
+      <div>
+        <div class="ct-tag">CT-02</div>
+        <h2 class="slide-title">Renderização e Integridade dos Cards</h2>
+
+        <div class="ct-blocks">
+          <div class="ct-block">
+            <div class="ct-block-label">Ação Simulada</div>
+            <div class="ct-block-text">Verificar o mapeamento dos dados retornados pela API (JSON) para a interface visual — Avatar, Nome, Partido e Estado.</div>
+          </div>
+          <div class="ct-block">
+            <div class="ct-block-label">Resultado Esperado</div>
+            <div class="ct-block-text">Avatar exibe as iniciais (AP, CE). Tags de partido (PT, PL) com cores distintas. Estados (SP, RJ) posicionados corretamente.</div>
+          </div>
+          <div class="ct-block status-pass">
+            <div class="ct-block-label">Status</div>
+            <div class="ct-block-text">A UI reflete perfeitamente o banco de dados sem quebras de layout.</div>
+            <div class="pass-pill">✓ PASSOU</div>
+          </div>
+        </div>
+      </div>
+      <div class="mockup-wrap">
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="phone-header">
+              <div class="phone-header-name">🏛 Meu Deputado</div>
+              <div class="phone-header-sub">DEPUTADOS ENCONTRADOS</div>
+            </div>
+            <div class="phone-body" style="padding-top:8px">
+              <div style="font-family:'IBM Plex Mono',monospace; font-size:7px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-light); margin-bottom:8px; padding-bottom:6px; border-bottom:1px solid var(--rule)">Avatar · Nome · Partido · Estado</div>
+              <div class="phone-row" style="border:1px dashed #b0c8de; padding:6px 8px; margin-bottom:4px; border-radius:2px">
+                <div class="phone-avatar" style="border-color:#b0c8de">AP</div>
+                <div class="phone-deputy-info">
+                  <div class="phone-deputy-name" style="color:var(--accent-mid)">Ana Paula Silva</div>
+                  <div class="phone-deputy-meta"><span class="party-tag" style="background:#8b0000">PT</span><span class="state-tag" style="color:var(--accent-mid)">SP ←</span></div>
+                </div>
+              </div>
+              <div class="phone-row" style="border:1px dashed #d4a8d4; padding:6px 8px; margin-bottom:4px; border-radius:2px">
+                <div class="phone-avatar" style="border-color:#d4a8d4">CE</div>
+                <div class="phone-deputy-info">
+                  <div class="phone-deputy-name" style="color:#7a3a7a">Carlos Eduardo Mendes</div>
+                  <div class="phone-deputy-meta"><span class="party-tag" style="background:#002868">PL</span><span class="state-tag" style="color:#7a3a7a">RJ ←</span></div>
+                </div>
+              </div>
+              <div class="phone-row"><div class="phone-avatar">MF</div><div class="phone-deputy-info"><div class="phone-deputy-name">Maria Fernanda Costa</div><div class="phone-deputy-meta"><span class="party-tag" style="background:#2e6b2e">MDB</span><span class="state-tag">MG</span></div></div></div>
+              <div class="phone-row"><div class="phone-avatar">RA</div><div class="phone-deputy-info"><div class="phone-deputy-name">Roberto Almeida Neto</div><div class="phone-deputy-meta"><span class="party-tag" style="background:#0055a5">PSDB</span><span class="state-tag">PR</span></div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-num">07 / 11</div>
+  </section>
+
+  <!-- ════════════ SLIDE 8 — CT-03 ════════════ -->
+  <section class="slide" id="slide-8" data-label="CT-03">
+    <div class="ct-layout">
+      <div>
+        <div class="ct-tag">CT-03</div>
+        <h2 class="slide-title">Fluxo de Interação e Navegação</h2>
+
+        <div class="ct-blocks">
+          <div class="ct-block">
+            <div class="ct-block-label">Ação Simulada</div>
+            <div class="ct-block-text">O usuário toca (tap) no ícone de seta <strong>›</strong> no card da deputada Ana Paula Silva.</div>
+          </div>
+          <div class="ct-block">
+            <div class="ct-block-label">Resultado Esperado</div>
+            <div class="ct-block-text">O roteamento deve abrir a visualização detalhada, passando o ID correto da parlamentar para carregar o dashboard (Presença, Projetos, Votos, Emendas).</div>
+          </div>
+          <div class="ct-block status-pass">
+            <div class="ct-block-label">Status</div>
+            <div class="ct-block-text">Navegação fluida e passagem de parâmetros confirmada.</div>
+            <div class="pass-pill">✓ PASSOU</div>
+          </div>
+        </div>
+      </div>
+      <div class="mockup-wrap">
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="phone-header" style="display:flex; align-items:center; gap:8px">
+              <span style="font-size:11px; opacity:0.7; cursor:pointer">← Voltar</span>
+              <div>
+                <div class="phone-header-name">Ana Paula Silva</div>
+                <div class="phone-header-sub">PT · SP · 57ª Legislatura</div>
+              </div>
+            </div>
+            <div class="phone-body" style="padding-top:10px">
+              <div class="phone-avatar" style="width:40px; height:40px; margin:0 auto 10px; font-size:13px; border-color:var(--accent)">AP</div>
+              <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:4px; margin-bottom:10px">
+                <div style="background:var(--accent-light); border-radius:2px; padding:5px; text-align:center">
+                  <div style="font-family:'Libre Baskerville',serif; font-size:13px; font-weight:700; color:var(--accent)">92%</div>
+                  <div style="font-size:7px; color:var(--ink-light); font-family:'IBM Plex Mono',monospace">Presença</div>
+                </div>
+                <div style="background:var(--accent-light); border-radius:2px; padding:5px; text-align:center">
+                  <div style="font-family:'Libre Baskerville',serif; font-size:13px; font-weight:700; color:var(--accent)">14</div>
+                  <div style="font-size:7px; color:var(--ink-light); font-family:'IBM Plex Mono',monospace">Projetos</div>
+                </div>
+                <div style="background:var(--accent-light); border-radius:2px; padding:5px; text-align:center">
+                  <div style="font-family:'Libre Baskerville',serif; font-size:13px; font-weight:700; color:var(--accent)">187</div>
+                  <div style="font-size:7px; color:var(--ink-light); font-family:'IBM Plex Mono',monospace">Votos</div>
+                </div>
+                <div style="background:var(--accent-light); border-radius:2px; padding:5px; text-align:center">
+                  <div style="font-family:'Libre Baskerville',serif; font-size:13px; font-weight:700; color:var(--accent)">23</div>
+                  <div style="font-size:7px; color:var(--ink-light); font-family:'IBM Plex Mono',monospace">Emendas</div>
+                </div>
+              </div>
+              <div style="font-size:9px; color:var(--ink-mid); padding:5px 0; border-top:1px solid var(--rule)">
+                <div style="font-weight:600; color:var(--ink)">PL 1234/2025 — Incentivo à Energia Solar</div>
+                <div style="font-size:8px; color:var(--ink-light); margin-top:2px">Estabelece incentivos fiscais para instalação de painéis solares.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-num">08 / 11</div>
+  </section>
+
+  <!-- ════════════ SLIDE 9 — CT-04 ════════════ -->
+  <section class="slide" id="slide-9" data-label="CT-04">
+    <div class="ct-layout">
+      <div>
+        <div class="ct-tag">CT-04</div>
+        <h2 class="slide-title">Tratamento de Exceções e Limites</h2>
+
+        <div style="background:var(--accent-light); border-left:4px solid var(--accent); padding:14px 18px; margin:16px 0 0; font-family:'Libre Baskerville',serif; font-size:13px; color:var(--accent); font-style:italic">
+          "Um bom QA não testa apenas o Caminho Feliz."
+        </div>
+
+        <div class="ct-blocks">
+          <div class="ct-block">
+            <div class="ct-block-label">Cenário de Exceção</div>
+            <div class="ct-block-text">Busca por um nome inexistente (ex: <strong>Deputado XYZ</strong>) — testando o estado vazio (Empty State).</div>
+          </div>
+          <div class="ct-block">
+            <div class="ct-block-label">Validação</div>
+            <div class="ct-block-text">O app não quebra. Exibe mensagem amigável de Empty State (<em>"Nenhum deputado encontrado"</em>) em vez de um erro genérico do sistema.</div>
+          </div>
+          <div class="ct-block">
+            <div class="ct-block-label">Prevenção</div>
+            <div class="ct-block-text">Validação de caracteres especiais no campo de busca para evitar injeções ou crashes.</div>
+          </div>
+          <div class="ct-block status-pass">
+            <div class="ct-block-label">Status</div>
+            <div class="ct-block-text">Empty state renderizado corretamente. Nenhum crash registrado.</div>
+            <div class="pass-pill">✓ PASSOU</div>
+          </div>
+        </div>
+      </div>
+      <div class="mockup-wrap">
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="phone-header">
+              <div class="phone-header-name">🏛 Meu Deputado</div>
+              <div class="phone-header-sub">ACOMPANHE O MANDATO</div>
+            </div>
+            <div class="phone-body">
+              <div class="phone-search highlight-err">🔍 Deputado XYZ</div>
+              <div class="phone-empty">
+                <div class="phone-empty-icon">🔍</div>
+                <div class="phone-empty-text">Nenhum deputado<br>encontrado.</div>
+                <div class="empty-label">Estado Vazio · Empty State</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-num">09 / 11</div>
+  </section>
+
+  <!-- ════════════ SLIDE 10 — KANBAN ════════════ -->
+  <section class="slide" id="slide-10" data-label="Kanban">
+    <div class="slide-subtitle">Qualidade no Fluxo de Desenvolvimento</div>
+    <h2 class="slide-title">A Qualidade Inserida no Fluxo Kanban</h2>
+
+    <div style="font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:0.1em; color:var(--accent-mid); margin-top:16px; margin-bottom:0; text-align:right">Cycle Time ←─── QA Focus ───→</div>
+
+    <div class="kanban">
+      <div class="kanban-col">
+        <div class="kanban-header"><div class="kanban-label">Coluna</div>A Fazer</div>
+        <div class="kanban-body">
+          <div class="kanban-card">Configurar notificações</div>
+          <div class="kanban-card yellow">Comparativo de médias</div>
+          <div class="kanban-card">Filtros por período</div>
+          <div class="kanban-card" style="opacity:0.5">Emendas detalhadas</div>
+        </div>
+      </div>
+      <div class="kanban-col">
+        <div class="kanban-header"><div class="kanban-label">Coluna</div>Em Andamento</div>
+        <div class="kanban-body">
+          <div class="kanban-card">Indicadores de desempenho</div>
+          <div class="kanban-card yellow" style="opacity:0.7">Dashboard do parlamentar</div>
+        </div>
+      </div>
+      <div class="kanban-col focus">
+        <div class="kanban-header"><div class="kanban-label">QA Focus ✦</div>Teste / Revisão</div>
+        <div class="kanban-body">
+          <div class="kanban-card blue focus">Busca e listagem (STORY-101)</div>
+        </div>
+        <div class="kanban-cycle">Cycle Time → em medição</div>
+      </div>
+      <div class="kanban-col">
+        <div class="kanban-header"><div class="kanban-label">Coluna</div>Concluído</div>
+        <div class="kanban-body">
+          <div class="kanban-card">Autenticação e cadastro</div>
+          <div class="kanban-card yellow">Seleção de deputado</div>
+          <div class="kanban-card">Perfil básico do parlamentar</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="kanban-info-row">
+      <div class="kanban-info">
+        <div class="kanban-info-title">Colaboração Contínua</div>
+        <p>No Scrum virtual, a comunicação com Dev 1 e Dev 2 foi diária (Daily Scrum), garantindo alinhamento constante.</p>
+      </div>
+      <div class="kanban-info">
+        <div class="kanban-info-title">Work In Progress (WIP)</div>
+        <p>Limitamos o WIP na coluna de testes. Uma história só avança para Concluído se passar 100% na bateria de testes.</p>
+      </div>
+      <div class="kanban-info">
+        <div class="kanban-info-title">Métricas de Fluxo</div>
+        <p>Foco em reduzir o Cycle Time (início do desenvolvimento → aprovação do QA) sem sacrificar a qualidade.</p>
+      </div>
+    </div>
+
+    <div class="slide-num">10 / 11</div>
+  </section>
+
+  <!-- ════════════ SLIDE 11 — VERDICT ════════════ -->
+  <section class="slide" id="slide-11" data-label="Veredito">
+    <div class="slide-subtitle">Sprint Review · Definition of Done</div>
+    <h2 class="slide-title">Veredito do QA e Entrega de Valor</h2>
+
+    <div class="verdict-layout">
+      <div class="verdict-list">
+        <div class="verdict-item">Todos os Critérios de Aceitação foram atendidos (CT-01 a CT-04 com status PASSOU).</div>
+        <div class="verdict-item">O design atende aos requisitos de usabilidade exigidos pelo Product Owner.</div>
+        <div class="verdict-item">O incremento de software está funcional, sem bugs impeditivos, pronto para agregar valor ao usuário final (Definition of Done cumprido).</div>
+        <div class="verdict-item next">Próximo Passo: Sprint Review e Demonstração ao Cliente.</div>
+      </div>
+      <div class="verdict-stamp">
+        <div class="stamp">
+          <div class="stamp-text">READY<br>FOR<br>RELEASE</div>
+          <div class="stamp-sub">Sprint · Definition of Done</div>
+        </div>
+        <div class="score-bar">
+          <div class="score-dots">
+            <div class="score-dot"></div>
+            <div class="score-dot"></div>
+            <div class="score-dot"></div>
+            <div class="score-dot"></div>
+          </div>
+          4 / 4 Casos de Teste · PASSOU
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-num">11 / 11</div>
+  </section>
+
+</div>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-left">UNDB · Gestão Ágil de Projetos · 2026.1 · Dev 3 — Testes e Qualidade</div>
+  <div class="footer-right">Isaac Nascimento — Meu Deputado QA</div>
+</footer>
+
+<script>
+  // ── Build TOC ──
+  const slides = document.querySelectorAll('.slide');
+  const toc = document.getElementById('toc');
+  const dots = [];
+
+  slides.forEach((slide, i) => {
+    const dot = document.createElement('button');
+    dot.className = 'toc-dot';
+    dot.title = slide.dataset.label || `Slide ${i+1}`;
+    dot.addEventListener('click', () => {
+      slide.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    toc.appendChild(dot);
+    dots.push(dot);
+  });
+
+  // ── Intersection Observer for slide animations & active dot ──
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        const idx = Array.from(slides).indexOf(entry.target);
+        dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+      }
+    });
+  }, { threshold: 0.15 });
+
+  slides.forEach(s => io.observe(s));
+
+  // ── Keyboard navigation ──
+  let current = 0;
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+      current = Math.min(current + 1, slides.length - 1);
+      slides[current].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+      current = Math.max(current - 1, 0);
+      slides[current].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+</script>
+</body>
+</html>

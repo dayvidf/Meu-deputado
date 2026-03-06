@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meu Deputado — Engenharia Backend</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+.site-nav {
+  border-bottom: 1px solid #d8d5ce;
+  padding: 0 48px;
+  background: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 0;
+}
+.site-nav-home {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  padding: 14px 0;
+  margin-right: 32px;
+  border-right: 1px solid #d8d5ce;
+  padding-right: 32px;
+  gap: 10px;
+}
+.site-nav-home-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #1a3a5c;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.site-nav-home:hover .site-nav-home-label { text-decoration: underline; }
+.site-nav-links {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  flex: 1;
+}
+.site-nav-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  padding: 0 16px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #888888;
+  border-bottom: 2px solid transparent;
+  transition: color 0.12s ease, border-color 0.12s ease;
+  white-space: nowrap;
+}
+.site-nav-link:hover { color: #1a3a5c; }
+.site-nav-link.active { color: #1a3a5c; border-bottom-color: #1a3a5c; }
+.site-nav-tag {
+  display: inline-block;
+  padding: 2px 6px;
+  background: #e8eef4;
+  color: #1a3a5c;
+  border-radius: 2px;
+  font-size: 8px;
+  margin-left: 6px;
+  letter-spacing: 0.08em;
+}
+@media (max-width: 768px) {
+  .site-nav { padding: 0 16px; overflow-x: auto; }
+  .site-nav-link { padding: 0 10px; font-size: 9px; }
+  .site-nav-tag { display: none; }
+}
+</style>
+<style>
+  :root {
+    --bg: #f5f4f0;
+    --white: #ffffff;
+    --ink: #1a1a1a;
+    --ink-mid: #444444;
+    --ink-light: #888888;
+    --rule: #d8d5ce;
+    --accent: #1a3a5c;
+    --accent-mid: #2e5f8a;
+    --accent-light: #e8eef4;
+    --success: #2e6b3e;
+    --success-bg: #eaf4ed;
+    --warn: #7a5c32;
+    --warn-bg: #faf7f2;
+    --code-bg: #1a1a2e;
+    --code-text: #a5d6ff;
+    --code-green: #3fb950;
+    --code-comment: #6e7681;
+    --tag-bg: #eef3f8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .page { max-width: 1100px; margin: 0 auto; padding: 56px 40px 80px; }
+
+  /* ── Top bar ── */
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--ink);
+    margin-bottom: 48px;
+  }
+  .topbar-left {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-light);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .topbar-right {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 13px;
+    color: var(--accent);
+    font-style: italic;
+  }
+
+  /* ── Hero ── */
+  .hero { margin-bottom: 56px; }
+  .hero-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 12px;
+  }
+  .hero h1 {
+    font-family: 'Libre Baskerville', serif;
+    font-size: clamp(28px, 4vw, 48px);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .hero h1 em { font-style: italic; color: var(--accent); }
+  .hero-tagline {
+    font-size: 15px;
+    color: var(--ink-mid);
+    max-width: 600px;
+    margin-top: 16px;
+    line-height: 1.7;
+  }
+
+  /* ── Section titles ── */
+  .section-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  /* ── Overview cards ── */
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin-bottom: 56px;
+  }
+  @media (max-width: 720px) {
+    .overview-grid { grid-template-columns: 1fr; }
+  }
+  .overview-card { background: var(--white); padding: 28px; }
+  .overview-card-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 12px;
+  }
+  .overview-card-title {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+  .overview-card p { font-size: 13px; color: var(--ink-mid); line-height: 1.7; }
+
+  /* ── Stats row ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin-bottom: 56px;
+  }
+  .stat-cell { background: var(--white); padding: 24px 28px; }
+  .stat-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 8px;
+  }
+  .stat-number {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--accent);
+  }
+  .stat-sub { margin-top: 6px; font-size: 12px; color: var(--ink-light); }
+
+  /* ── Rationale box ── */
+  .rationale {
+    background: var(--white);
+    border: 1px solid var(--rule);
+    padding: 32px;
+    margin-bottom: 56px;
+  }
+  .rationale p { font-size: 13.5px; color: var(--ink-mid); line-height: 1.8; margin-bottom: 14px; }
+  .rationale p:last-child { margin-bottom: 0; }
+  .rationale strong { color: var(--ink); font-weight: 600; }
+
+  /* ── Divider ── */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 56px 0;
+  }
+  .divider-line { flex: 1; height: 1px; background: var(--rule); }
+  .divider-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    white-space: nowrap;
+  }
+
+  /* ── Story blocks (HU cards) ── */
+  .hu-block {
+    background: var(--white);
+    border: 1px solid var(--rule);
+    margin-bottom: 2px;
+    overflow: hidden;
+  }
+  .hu-block:last-of-type { margin-bottom: 56px; }
+
+  .hu-header {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    padding: 14px 24px;
+    background: var(--accent);
+    color: white;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s ease;
+  }
+  .hu-header:hover { background: var(--accent-mid); }
+  .hu-header-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    opacity: 0.7;
+  }
+  .hu-header-name {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .hu-header-status {
+    margin-left: auto;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    opacity: 0.9;
+    padding: 2px 10px;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 2px;
+  }
+  .hu-header-arrow {
+    font-size: 14px;
+    opacity: 0.6;
+    transition: transform 0.2s ease;
+    margin-left: 8px;
+  }
+  .hu-header.open .hu-header-arrow { transform: rotate(90deg); }
+
+  .hu-body { display: none; }
+  .hu-body.open { display: block; }
+
+  /* ── Task table inside HU ── */
+  .task-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .task-table thead tr {
+    border-bottom: 1px solid var(--rule);
+    background: #fafaf8;
+  }
+  .task-table th {
+    padding: 10px 20px;
+    text-align: left;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    font-weight: 400;
+    white-space: nowrap;
+  }
+  .task-table tbody tr { border-bottom: 1px solid #eeece8; }
+  .task-table tbody tr:last-child { border-bottom: none; }
+  .task-table tbody tr:hover { background: #fafaf8; }
+  .task-table td {
+    padding: 16px 20px;
+    vertical-align: top;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink-mid);
+  }
+  .task-table td:first-child {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-light);
+    width: 70px;
+    white-space: nowrap;
+  }
+  .task-table td.task-name { color: var(--ink); font-weight: 500; width: 200px; }
+  .task-table td.task-desc { max-width: 480px; }
+
+  /* ── Badge chips ── */
+  .chip {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 2px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+  .chip-done { background: var(--success-bg); color: var(--success); }
+  .chip-test { background: var(--accent-light); color: var(--accent); }
+  .chip-plan { background: var(--warn-bg); color: var(--warn); }
+
+  /* ── Tech stack tags ── */
+  .tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 20px 24px;
+    border-top: 1px solid var(--rule);
+    background: #fafaf8;
+  }
+  .tag {
+    padding: 4px 12px;
+    background: var(--tag-bg);
+    border: 1px solid var(--accent-light);
+    border-radius: 2px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+  }
+
+  /* ── Pipeline flow ── */
+  .pipeline {
+    background: var(--white);
+    border: 1px solid var(--rule);
+    padding: 0;
+    margin-bottom: 56px;
+    overflow: hidden;
+  }
+  .pipeline-header {
+    padding: 20px 28px;
+    border-bottom: 1px solid var(--rule);
+    background: #fafaf8;
+  }
+  .pipeline-header h3 {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 16px;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .pipeline-header p {
+    font-size: 12px;
+    color: var(--ink-light);
+  }
+
+  .pipeline-steps {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border-top: 1px solid var(--rule);
+  }
+  .pipeline-step { background: var(--white); padding: 24px 20px; position: relative; }
+  .pipeline-step::after {
+    content: '→';
+    position: absolute;
+    right: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--accent);
+    font-size: 16px;
+    z-index: 2;
+  }
+  .pipeline-step:last-child::after { display: none; }
+
+  .step-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--ink-light);
+    margin-bottom: 10px;
+  }
+  .step-title {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .step-desc { font-size: 12px; color: var(--ink-mid); line-height: 1.6; }
+
+  /* ── Terminal ── */
+  .terminal-wrap {
+    background: var(--white);
+    border: 1px solid var(--rule);
+    margin-bottom: 56px;
+    overflow: hidden;
+  }
+  .terminal-header {
+    padding: 12px 20px;
+    background: #fafaf8;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .terminal-dots { display: flex; gap: 6px; }
+  .terminal-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+  .terminal-dot.red { background: #ff5f57; }
+  .terminal-dot.yellow { background: #febc2e; }
+  .terminal-dot.green { background: #28c840; }
+  .terminal-header-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-light);
+    letter-spacing: 0.05em;
+  }
+  .terminal-body {
+    background: var(--code-bg);
+    padding: 24px 28px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    line-height: 2;
+    overflow-x: auto;
+  }
+  .t-prompt { color: var(--code-green); }
+  .t-cmd { color: var(--code-text); }
+  .t-ok { color: var(--code-green); }
+  .t-info { color: #a8b3c4; }
+  .t-val { color: #ffa657; }
+  .t-comment { color: var(--code-comment); }
+
+  /* ── Code block ── */
+  .code-wrap {
+    background: var(--white);
+    border: 1px solid var(--rule);
+    margin-bottom: 56px;
+    overflow: hidden;
+  }
+  .code-header {
+    padding: 12px 20px;
+    background: #fafaf8;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .code-header-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-mid);
+    letter-spacing: 0.05em;
+  }
+  .code-lang {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-light);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .code-body {
+    background: var(--code-bg);
+    padding: 24px 28px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.9;
+    overflow-x: auto;
+    color: var(--code-text);
+  }
+  .c-kw { color: #ff7b72; }
+  .c-fn { color: #d2a8ff; }
+  .c-str { color: #a5d6ff; }
+  .c-num { color: #ffa657; }
+  .c-cm { color: var(--code-comment); font-style: italic; }
+  .c-var { color: var(--code-text); }
+  .c-ok { color: var(--code-green); }
+
+  /* ── Architecture decision table ── */
+  .arch-table {
+    background: var(--white);
+    border: 1px solid var(--rule);
+    margin-bottom: 56px;
+    overflow: hidden;
+  }
+  .arch-table table { width: 100%; border-collapse: collapse; }
+  .arch-table thead tr { background: var(--accent); }
+  .arch-table th {
+    padding: 12px 20px;
+    text-align: left;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.7);
+    font-weight: 400;
+  }
+  .arch-table tbody tr { border-bottom: 1px solid #eeece8; }
+  .arch-table tbody tr:last-child { border-bottom: none; }
+  .arch-table tbody tr:hover { background: #fafaf8; }
+  .arch-table td {
+    padding: 14px 20px;
+    font-size: 13px;
+    color: var(--ink-mid);
+    vertical-align: top;
+    line-height: 1.6;
+  }
+  .arch-table td:first-child { color: var(--ink); font-weight: 500; width: 180px; }
+  .arch-check { color: var(--success); font-weight: 600; }
+
+  /* ── Footer ── */
+  footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    margin-top: 56px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-light);
+    letter-spacing: 0.06em;
+  }
+
+  /* ── Accordion highlight ── */
+  @keyframes highlightFade {
+    0% { background: var(--accent-light); }
+    100% { background: var(--white); }
+  }
+  .hu-block.highlight .hu-body { animation: highlightFade 1.5s ease forwards; }
+
+  @media (max-width: 720px) {
+    .page { padding: 32px 20px 60px; }
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .pipeline-steps { grid-template-columns: 1fr; }
+    .pipeline-step::after { display: none; }
+  }
+</style>
+</head>
+<script>
+  // Highlight the active nav link based on current filename
+  const page = window.location.pathname.split('/').pop();
+  document.querySelectorAll('.site-nav-link').forEach(link => {
+    if (link.getAttribute('href') === page) link.classList.add('active');
+  });
+</script>
+<body>
+  <nav class="site-nav">
+  <a class="site-nav-home" href="index.html">
+    <span class="site-nav-home-label">← Meu Deputado</span>
+  </a>
+  <div class="site-nav-links">
+    <a class="site-nav-link" href="po.html" data-nav="po">Product Owner <span class="site-nav-tag">PO</span></a>
+    <a class="site-nav-link" href="scrum_master.html" data-nav="sm">Scrum Master <span class="site-nav-tag">SM</span></a>
+    <a class="site-nav-link" href="back_end.html" data-nav="backend">Back-end <span class="site-nav-tag">Dev 1</span></a>
+    <a class="site-nav-link" href="front_end.html" data-nav="frontend">Front-end <span class="site-nav-tag">Dev 2</span></a>
+    <a class="site-nav-link" href="qa.html" data-nav="qa">Qualidade <span class="site-nav-tag">Dev 3</span></a>
+    <a class="site-nav-link" href="kanban.html" data-nav="kanban">Kanban <span class="site-nav-tag">Dev 4</span></a>
+  </div>
+</nav>
+<div class="page">
+
+  <!-- ── Top bar ── -->
+  <div class="topbar">
+    <div class="topbar-left">UNDB · Gestão Ágil de Projetos · 2026.1 · Engenharia Backend v1.0</div>
+    <div class="topbar-right">Meu Deputado — Visão do Backend Developer</div>
+  </div>
+
+  <!-- ── Hero ── -->
+  <div class="hero">
+    <div class="hero-label">Documentação Técnica · Sprint 01</div>
+    <h1>Arquitetura &amp; <em>Regras de Negócio</em></h1>
+    <p class="hero-tagline">
+      Detalhamento técnico das Histórias de Usuário, pipeline de dados governamentais e orquestração de IA desenvolvidos pela equipe de Backend Engineering no projeto Meu Deputado.
+    </p>
+  </div>
+
+  <!-- ── Overview cards ── -->
+  <div class="section-title">Visão Geral da Atuação</div>
+  <div class="overview-grid">
+    <div class="overview-card">
+      <div class="overview-card-label">Papel no Time</div>
+      <div class="overview-card-title">Backend Developer</div>
+      <p>Responsável pela infraestrutura de dados do projeto. Atuação focada na criação de um sistema Stateless que orquestra fontes de dados governamentais e motores de inteligência artificial de forma síncrona.</p>
+    </div>
+    <div class="overview-card">
+      <div class="overview-card-label">Principal Desafio</div>
+      <div class="overview-card-title">Dados em Linguagem Acessível</div>
+      <p>O foco não é apenas buscar o dado bruto da API pública. É garantir que ele chegue ao cidadão de forma rápida, filtrada e, principalmente, em linguagem acessível através do processamento de linguagem natural.</p>
+    </div>
+    <div class="overview-card">
+      <div class="overview-card-label">Decisão de Arquitetura</div>
+      <div class="overview-card-title">Sem Banco de Dados</div>
+      <p>Para a Sprint 1, optou-se por arquitetura Stateless. O servidor processa em tempo real sem armazenar dados, eliminando custos de storage e garantindo sempre o dado oficial atualizado do Portal da Transparência.</p>
+    </div>
+    <div class="overview-card">
+      <div class="overview-card-label">Fonte Oficial de Dados</div>
+      <div class="overview-card-title">API da Câmara Federal</div>
+      <p>Consumo direto da API REST de Dados Abertos da Câmara dos Deputados, com tratamento de exceções, normalização de contratos JSON e lógica de agregação de despesas por categoria parlamentar.</p>
+    </div>
+  </div>
+
+  <!-- ── Stats ── -->
+  <div class="section-title">Métricas da Sprint</div>
+  <div class="stats-row">
+    <div class="stat-cell">
+      <div class="stat-label">Histórias de Usuário</div>
+      <div class="stat-number">02</div>
+      <div class="stat-sub">Backend responsável</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-label">Tarefas Técnicas</div>
+      <div class="stat-number">08</div>
+      <div class="stat-sub">4 por história</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-label">Endpoints Integrados</div>
+      <div class="stat-number">04</div>
+      <div class="stat-sub">API Câmara + LLM</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-label">Tempo de Resposta</div>
+      <div class="stat-number">1.4s</div>
+      <div class="stat-sub">média por requisição completa</div>
+    </div>
+  </div>
+
+  <!-- ── Rationale ── -->
+  <div class="section-title">Contexto Técnico</div>
+  <div class="rationale">
+    <p>
+      A atuação de Backend Developer neste projeto foca na sustentação da infraestrutura de dados. O maior desafio superado foi a criação de um sistema Stateless que orquestra fontes de dados governamentais e motores de inteligência artificial de forma síncrona.
+    </p>
+    <p>
+      O foco não é apenas buscar o dado, mas garantir que ele chegue ao cidadão de forma rápida, filtrada e, principalmente, em linguagem acessível através do processamento de linguagem natural. Cada requisição do aplicativo dispara uma cadeia de processamento: autenticação com a API pública, filtragem bruta de campos desnecessários, agregação de categorias de despesas, e — quando há projetos de lei — extração e tradução automática do texto jurídico via LLM.
+    </p>
+    <p>
+      A escolha da arquitetura sem banco de dados foi deliberada: elimina custos de armazenamento, remove o risco de cache desatualizado e garante que o cidadão veja sempre o dado oficial mais recente do Portal da Transparência — alinhado com o princípio de transparência radical do produto.
+    </p>
+  </div>
+
+  <!-- ── HU sections ── -->
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-label">Detalhamento Técnico das Histórias de Usuário</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <div class="section-title">Histórias de Usuário · Tarefas de Engenharia</div>
+
+  <!-- HU 01 -->
+  <div class="hu-block" id="hu01">
+    <div class="hu-header open" onclick="toggleHU(this)">
+      <span class="hu-header-num">H.U. 01</span>
+      <span class="hu-header-name">Consulta de Perfis e Gastos Parlamentares</span>
+      <span class="hu-header-status chip-done">✓ Concluído</span>
+      <span class="hu-header-arrow">›</span>
+    </div>
+    <div class="hu-body open">
+      <table class="task-table">
+        <thead>
+          <tr>
+            <th>Tarefa</th>
+            <th>Nome</th>
+            <th class="task-desc">Descrição Técnica</th>
+            <th>Tipo</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>T-01.1</td>
+            <td class="task-name">Integração com Web Service</td>
+            <td class="task-desc">Implementação de cliente HTTP para consumo da API REST de Dados Abertos da Câmara. Configuração de <code>headers</code> adequados (Accept, Content-Type), tratamento de timeout e retries automáticos para garantir resiliência em chamadas aos endpoints <code>/deputados/{id}</code> e <code>/deputados/{id}/despesas</code>.</td>
+            <td><span class="chip chip-done">Integração</span></td>
+            <td><span class="chip chip-done">✓ Done</span></td>
+          </tr>
+          <tr>
+            <td>T-01.2</td>
+            <td class="task-name">Algoritmo de Agregação</td>
+            <td class="task-desc">Desenvolvimento de lógica para iterar sobre grandes volumes de objetos JSON retornados pela API. Filtragem e somatória de gastos por categoria — Combustíveis, Aluguel, Passagens Aéreas, Gabinete — vinculados ao ID específico do parlamentar consultado, com suporte a paginação da API.</td>
+            <td><span class="chip chip-done">Lógica</span></td>
+            <td><span class="chip chip-done">✓ Done</span></td>
+          </tr>
+          <tr>
+            <td>T-01.3</td>
+            <td class="task-name">Normalização e Tratamento de Exceções</td>
+            <td class="task-desc">Criação de filtros defensivos para tratar dados corrompidos, campos nulos ou ausentes vindos da fonte oficial — como imagens de perfil inexistentes e siglas de partido vazias. Garante que o Front-end receba sempre um contrato de dados íntegro, sem quebras de renderização.</td>
+            <td><span class="chip chip-plan">Resiliência</span></td>
+            <td><span class="chip chip-done">✓ Done</span></td>
+          </tr>
+          <tr>
+            <td>T-01.4</td>
+            <td class="task-name">Lógica Comparativa</td>
+            <td class="task-desc">Cálculo em tempo real da diferença percentual entre os gastos do deputado selecionado e a média histórica do seu respectivo estado. Utiliza dataset derivado da API pública para compor o benchmark estadual, retornando o delta e o percentil relativo ao grupo.</td>
+            <td><span class="chip chip-test">Negócio</span></td>
+            <td><span class="chip chip-done">✓ Done</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="tag-row">
+        <span class="tag">Python / Node.js</span>
+        <span class="tag">REST Client</span>
+        <span class="tag">JSON Parsing</span>
+        <span class="tag">Error Handling</span>
+        <span class="tag">Data Aggregation</span>
+        <span class="tag">Stateless</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- HU 02 -->
+  <div class="hu-block" id="hu02">
+    <div class="hu-header open" onclick="toggleHU(this)">
+      <span class="hu-header-num">H.U. 02</span>
+      <span class="hu-header-name">Resumo de Projetos de Lei via Inteligência Artificial</span>
+      <span class="hu-header-status chip-test">⧗ Em Teste</span>
+      <span class="hu-header-arrow">›</span>
+    </div>
+    <div class="hu-body open">
+      <table class="task-table">
+        <thead>
+          <tr>
+            <th>Tarefa</th>
+            <th>Nome</th>
+            <th class="task-desc">Descrição Técnica</th>
+            <th>Tipo</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>T-02.1</td>
+            <td class="task-name">Pipeline de Recuperação Legislativa</td>
+            <td class="task-desc">Mapeamento dos endpoints de proposições (<code>/proposicoes</code> e <code>/proposicoes/{id}/textos</code>) para extração automatizada da "Ementa" — texto base do projeto de lei. Implementação de lógica de seleção do texto mais recente quando há múltiplas versões registradas.</td>
+            <td><span class="chip chip-done">Pipeline</span></td>
+            <td><span class="chip chip-test">⧗ Em Teste</span></td>
+          </tr>
+          <tr>
+            <td>T-02.2</td>
+            <td class="task-name">Orquestração de LLM</td>
+            <td class="task-desc">Configuração do túnel de comunicação seguro entre o servidor e o modelo de linguagem (OpenAI / Gemini API). Inclui definição do modelo-alvo, controle de <code>max_tokens</code> para respostas concisas, e gerenciamento da chave de API via variável de ambiente para não expor credenciais no repositório.</td>
+            <td><span class="chip chip-test">Integração IA</span></td>
+            <td><span class="chip chip-test">⧗ Em Teste</span></td>
+          </tr>
+          <tr>
+            <td>T-02.3</td>
+            <td class="task-name">Prompt Engineering Estruturado</td>
+            <td class="task-desc">Desenvolvimento de diretrizes de contexto (system prompt) para que a IA atue como <em>"Tradutor de Leis para o Cidadão"</em>: remove jargão burocrático, mantém fidelidade legislativa, usa linguagem de 5ª série e responde em no máximo 3 frases. Inclui exemplos few-shot para calibrar o tom.</td>
+            <td><span class="chip chip-test">IA / NLP</span></td>
+            <td><span class="chip chip-test">⧗ Em Teste</span></td>
+          </tr>
+          <tr>
+            <td>T-02.4</td>
+            <td class="task-name">Otimização de Resposta</td>
+            <td class="task-desc">Formatação do retorno da IA em blocos estruturados. O payload final entregue ao Front-end é normalizado em contrato JSON limpo: <code>{ titulo: "", resumo: "", palavras_chave: [] }</code>, reduzindo carga cognitiva do usuário e facilitando renderização de componentes no app.</td>
+            <td><span class="chip chip-done">Formatação</span></td>
+            <td><span class="chip chip-test">⧗ Em Teste</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="tag-row">
+        <span class="tag">OpenAI API</span>
+        <span class="tag">Gemini API</span>
+        <span class="tag">Prompt Engineering</span>
+        <span class="tag">NLP</span>
+        <span class="tag">JSON Contract</span>
+        <span class="tag">Few-shot</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Pipeline section ── -->
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-label">Fluxo de Processamento</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <div class="section-title">Pipeline de Dados · Passo a Passo</div>
+
+  <div class="pipeline">
+    <div class="pipeline-header">
+      <h3>Como o Back-end Processa Cada Requisição</h3>
+      <p>Sequência de 5 etapas executadas a cada chamada do aplicativo — sem estado persistido entre requisições.</p>
+    </div>
+    <div class="pipeline-steps">
+      <div class="pipeline-step">
+        <div class="step-num">ETAPA 01</div>
+        <div class="step-title">Requisição</div>
+        <div class="step-desc">O aplicativo solicita informações de um deputado. O Back-end intercepta a chamada e identifica quais dados precisam ser buscados na API da Câmara.</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-num">ETAPA 02</div>
+        <div class="step-title">Filtragem Bruta</div>
+        <div class="step-desc">Os dados chegam em formato bruto com centenas de campos desnecessários. O Back-end limpa tudo, retendo apenas nome, foto, partido e os valores financeiros relevantes.</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-num">ETAPA 03</div>
+        <div class="step-title">Agregação</div>
+        <div class="step-desc">Gastos são agrupados por categoria (Combustíveis, Aluguel, Gabinete) e comparados com a média estadual para gerar o índice comparativo em tempo real.</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-num">ETAPA 04</div>
+        <div class="step-title">Processamento IA</div>
+        <div class="step-desc">Se houver projeto de lei associado, o Back-end extrai a ementa, envia o texto jurídico para o modelo de linguagem e aguarda o resumo em linguagem cidadã.</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-num">ETAPA 05</div>
+        <div class="step-title">Resposta Organizada</div>
+        <div class="step-desc">O Back-end reúne resumo da IA + dados financeiros + perfil em um único JSON leve e bem estruturado, entregando ao app o contrato final de dados.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Architecture decisions table ── -->
+  <div class="section-title">Decisões de Arquitetura</div>
+  <div class="arch-table">
+    <table>
+      <thead>
+        <tr>
+          <th>Decisão</th>
+          <th>Abordagem Adotada</th>
+          <th>Justificativa Técnica</th>
+          <th>Benefício</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Persistência de Dados</td>
+          <td>Arquitetura Stateless (sem DB)</td>
+          <td>Sprint 1 foca em validação de produto; banco de dados adicionaria overhead operacional sem ganho imediato.</td>
+          <td><span class="arch-check">✓</span> Zero custo de storage; dado sempre atualizado</td>
+        </tr>
+        <tr>
+          <td>Fonte de Dados</td>
+          <td>API REST da Câmara (Dados Abertos)</td>
+          <td>Fonte oficial e pública; elimina custo de aquisição e garante dados auditáveis pela fonte primária.</td>
+          <td><span class="arch-check">✓</span> Confiabilidade e sem licenciamento</td>
+        </tr>
+        <tr>
+          <td>Processamento de IA</td>
+          <td>LLM externo via API (OpenAI/Gemini)</td>
+          <td>Evita custo de treinamento/hosting de modelo próprio. Modelos prontos têm performance superior em NLP jurídico.</td>
+          <td><span class="arch-check">✓</span> Time-to-market rápido; qualidade alta</td>
+        </tr>
+        <tr>
+          <td>Contrato de Dados</td>
+          <td>JSON normalizado pelo Back-end</td>
+          <td>Front-end não deve lidar com inconsistências da API externa. Back-end é o único responsável por entregar um contrato limpo.</td>
+          <td><span class="arch-check">✓</span> Desacoplamento e resiliência no Front</td>
+        </tr>
+        <tr>
+          <td>Segredos e Credenciais</td>
+          <td>Variáveis de ambiente (.env)</td>
+          <td>Chaves de API nunca expostas no código-fonte. Repositório público exige isolamento total de credenciais sensíveis.</td>
+          <td><span class="arch-check">✓</span> Segurança e conformidade</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── Terminal ── -->
+  <div class="section-title">Simulação de Fluxo · Console de Requisição</div>
+  <div class="terminal-wrap">
+    <div class="terminal-header">
+      <div class="terminal-dots">
+        <div class="terminal-dot red"></div>
+        <div class="terminal-dot yellow"></div>
+        <div class="terminal-dot green"></div>
+      </div>
+      <div class="terminal-header-label">backend-server · node process · GET /api/v1/deputado/220593/resumo-pl</div>
+    </div>
+    <div class="terminal-body">
+      <div><span class="t-comment"># Simulação de requisição completa com pipeline de IA ativado</span></div>
+      <div><span class="t-prompt">›</span> <span class="t-cmd">Inicializando roteamento backend...</span> <span class="t-ok">OK</span></div>
+      <div><span class="t-prompt">›</span> <span class="t-cmd">GET /api/v1/deputado/</span><span class="t-val">220593</span><span class="t-cmd">/resumo-pl</span></div>
+      <div><span class="t-prompt">›</span> <span class="t-cmd">Conectando à API da Câmara...</span> <span class="t-ok">Conectado (200ms)</span></div>
+      <div><span class="t-prompt">›</span> <span class="t-cmd">Recuperando perfil do deputado ID:</span> <span class="t-val">220593</span></div>
+      <div><span class="t-prompt">›</span> <span class="t-cmd">Campos recebidos:</span> <span class="t-val">87 campos</span> <span class="t-comment">→ normalizando para contrato interno (12 campos)</span></div>
+      <div><span class="t-prompt">›</span> <span class="t-cmd">Buscando despesas do parlamentar por categoria...</span></div>
+      <div><span class="t-prompt">›</span> <span class="t-cmd">Agregação concluída:</span> <span class="t-val">Combustíveis R$4.230 · Aluguel R$8.900 · Passagens R$11.400</span></div>
+      <div><span class="t-prompt">›</span> <span class="t-cmd">Calculando diferença vs. média estadual (MA):</span> <span class="t-val">+14.3%</span> <span class="t-ok">acima da média</span></div>
+      <div><span class="t-prompt">›</span> <span class="t-cmd">Projeto de lei detectado. Extraindo ementa de /proposicoes/</span><span class="t-val">123456</span><span class="t-cmd">/textos...</span></div>
+      <div><span class="t-prompt">›</span> <span class="t-cmd">Processando texto jurídico:</span> <span class="t-val">1.540 caracteres</span></div>
+      <div><span class="t-prompt">›</span> <span class="t-cmd">Enviando para modelo de linguagem (OpenAI gpt-4o-mini)...</span> <span class="t-ok">Sucesso.</span></div>
+      <div><span class="t-prompt">›</span> <span class="t-cmd">Resumo gerado:</span> <span class="t-val">"A proposta visa isentar impostos em medicamentos básicos para famílias de baixa renda."</span></div>
+      <div><span class="t-prompt">›</span> <span class="t-cmd">Montando contrato JSON final...</span></div>
+      <div><span class="t-prompt">›</span> <span class="t-ok">Resposta entregue ao app em 1.4s.</span> <span class="t-comment">// 200 OK</span></div>
+    </div>
+  </div>
+
+  <!-- ── Pseudocode ── -->
+  <div class="section-title">Pseudocódigo · Lógica Central do Backend</div>
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-header-title">processar_requisicao_deputado.pseudo</div>
+      <div class="code-lang">Pseudocódigo</div>
+    </div>
+    <div class="code-body">
+<span class="c-cm">// ─── H.U. 01: Consulta de Perfil e Gastos ─────────────────────────────────</span>
+<span class="c-kw">FUNÇÃO</span> <span class="c-fn">buscar_perfil_e_gastos</span>(<span class="c-var">deputado_id</span>):
+
+  <span class="c-cm">// Tarefa 1 — Integração com a API da Câmara</span>
+  <span class="c-var">perfil_bruto</span> = <span class="c-fn">http.GET</span>(<span class="c-str">"api.camara.gov.br/deputados/{deputado_id}"</span>,
+                           headers={Accept: "application/json"})
+
+  <span class="c-var">despesas_brutas</span> = <span class="c-fn">http.GET</span>(<span class="c-str">"api.camara.gov.br/deputados/{deputado_id}/despesas"</span>,
+                              params={ano: ano_atual, pagina: 1})
+
+  <span class="c-cm">// Tarefa 2 — Algoritmo de agregação por categoria</span>
+  <span class="c-var">categorias</span> = ["COMBUSTÍVEIS", "ALUGUEL", "PASSAGENS AÉREAS", "GABINETE"]
+  <span class="c-var">totais</span> = {}
+  <span class="c-kw">PARA CADA</span> <span class="c-var">despesa</span> <span class="c-kw">EM</span> <span class="c-var">despesas_brutas</span>:
+    <span class="c-kw">SE</span> <span class="c-var">despesa.tipo</span> <span class="c-kw">ESTÁ EM</span> <span class="c-var">categorias</span>:
+      <span class="c-var">totais[despesa.tipo]</span> += <span class="c-var">despesa.valor</span>
+
+  <span class="c-cm">// Tarefa 3 — Normalização e tratamento de nulos</span>
+  <span class="c-var">perfil</span> = {
+    nome:    <span class="c-fn">safe_get</span>(<span class="c-var">perfil_bruto</span>, <span class="c-str">"nomeCivil"</span>, <span class="c-str">"Nome não disponível"</span>),
+    foto:    <span class="c-fn">safe_get</span>(<span class="c-var">perfil_bruto</span>, <span class="c-str">"urlFoto"</span>, <span class="c-str">"placeholder.png"</span>),
+    partido: <span class="c-fn">safe_get</span>(<span class="c-var">perfil_bruto</span>, <span class="c-str">"siglaPartido"</span>, <span class="c-str">"N/A"</span>),
+    estado:  <span class="c-fn">safe_get</span>(<span class="c-var">perfil_bruto</span>, <span class="c-str">"siglaUf"</span>, <span class="c-str">"N/A"</span>)
+  }
+
+  <span class="c-cm">// Tarefa 4 — Lógica comparativa com média estadual</span>
+  <span class="c-var">media_estadual</span> = <span class="c-fn">calcular_media</span>(<span class="c-var">perfil.estado</span>)
+  <span class="c-var">total_deputado</span> = <span class="c-fn">somar_valores</span>(<span class="c-var">totais</span>)
+  <span class="c-var">delta_percentual</span> = ((<span class="c-var">total_deputado</span> - <span class="c-var">media_estadual</span>) / <span class="c-var">media_estadual</span>) * <span class="c-num">100</span>
+
+  <span class="c-kw">RETORNAR</span> { perfil, totais, delta_percentual }
+
+
+<span class="c-cm">// ─── H.U. 02: Resumo de Projetos de Lei via IA ────────────────────────────</span>
+<span class="c-kw">FUNÇÃO</span> <span class="c-fn">resumir_projeto_de_lei</span>(<span class="c-var">proposicao_id</span>):
+
+  <span class="c-cm">// Tarefa 1 — Pipeline de recuperação legislativa</span>
+  <span class="c-var">textos</span> = <span class="c-fn">http.GET</span>(<span class="c-str">"api.camara.gov.br/proposicoes/{proposicao_id}/textos"</span>)
+  <span class="c-var">ementa</span> = <span class="c-var">textos</span>[<span class="c-num">-1</span>].ementa  <span class="c-cm">// versão mais recente</span>
+
+  <span class="c-cm">// Tarefa 3 — Prompt engineering estruturado</span>
+  <span class="c-var">system_prompt</span> = <span class="c-str">"""
+    Você é um tradutor de leis para o cidadão comum.
+    Regras: use linguagem simples, máx. 3 frases,
+    sem jargão jurídico, mantenha o sentido original.
+  """</span>
+
+  <span class="c-cm">// Tarefa 2 — Orquestração do LLM via API</span>
+  <span class="c-var">resposta_ia</span> = <span class="c-fn">llm.POST</span>(
+    model=<span class="c-str">"gpt-4o-mini"</span>,
+    system=<span class="c-var">system_prompt</span>,
+    user=<span class="c-str">"Resuma: "</span> + <span class="c-var">ementa</span>,
+    max_tokens=<span class="c-num">150</span>
+  )
+
+  <span class="c-cm">// Tarefa 4 — Formatação do retorno em JSON limpo</span>
+  <span class="c-kw">RETORNAR</span> {
+    titulo:        <span class="c-fn">extrair_titulo</span>(<span class="c-var">ementa</span>),
+    resumo:        <span class="c-var">resposta_ia.texto</span>,
+    palavras_chave: <span class="c-fn">extrair_palavras</span>(<span class="c-var">ementa</span>)
+  }
+    </div>
+  </div>
+
+  <footer>
+    <div>UNDB · Gestão Ágil de Projetos · 2026.1 · Backend Engineering v1.0</div>
+    <div>Meu Deputado — Backend Developer</div>
+  </footer>
+
+</div>
+
+<script>
+  function toggleHU(header) {
+    const block = header.closest('.hu-block');
+    const body = block.querySelector('.hu-body');
+    const isOpen = body.classList.contains('open');
+    body.classList.toggle('open', !isOpen);
+    header.classList.toggle('open', !isOpen);
+  }
+</script>
+</body>
+</html>

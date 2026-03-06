@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meu Deputado — Scrum Master</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+.site-nav {
+  border-bottom: 1px solid #d8d5ce;
+  padding: 0 48px;
+  background: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 0;
+}
+.site-nav-home {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  padding: 14px 0;
+  margin-right: 32px;
+  border-right: 1px solid #d8d5ce;
+  padding-right: 32px;
+  gap: 10px;
+}
+.site-nav-home-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #1a3a5c;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.site-nav-home:hover .site-nav-home-label { text-decoration: underline; }
+.site-nav-links {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  flex: 1;
+}
+.site-nav-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  padding: 0 16px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #888888;
+  border-bottom: 2px solid transparent;
+  transition: color 0.12s ease, border-color 0.12s ease;
+  white-space: nowrap;
+}
+.site-nav-link:hover { color: #1a3a5c; }
+.site-nav-link.active { color: #1a3a5c; border-bottom-color: #1a3a5c; }
+.site-nav-tag {
+  display: inline-block;
+  padding: 2px 6px;
+  background: #e8eef4;
+  color: #1a3a5c;
+  border-radius: 2px;
+  font-size: 8px;
+  margin-left: 6px;
+  letter-spacing: 0.08em;
+}
+@media (max-width: 768px) {
+  .site-nav { padding: 0 16px; overflow-x: auto; }
+  .site-nav-link { padding: 0 10px; font-size: 9px; }
+  .site-nav-tag { display: none; }
+}
+</style>
+<style>
+  :root {
+    --bg: #f5f4f0;
+    --white: #ffffff;
+    --ink: #1a1a1a;
+    --ink-mid: #444444;
+    --ink-light: #888888;
+    --rule: #d8d5ce;
+    --accent: #1a3a5c;
+    --accent-mid: #2e5f8a;
+    --accent-light: #e8eef4;
+    --must: #1a3a5c;
+    --should: #4a6741;
+    --could: #7a5c32;
+    --q1-bg: #eef3f8;
+    --q1-border: #b0c8de;
+    --q2-bg: #f0f5ee;
+    --q2-border: #aec4ab;
+    --q3-bg: #faf7f2;
+    --q3-border: #d4c4aa;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .page { max-width: 1100px; margin: 0 auto; padding: 56px 40px 80px; }
+
+  /* ── Top bar ── */
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--ink);
+    margin-bottom: 48px;
+  }
+  .topbar-left {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-light);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .topbar-right {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 13px;
+    color: var(--accent);
+    font-style: italic;
+  }
+
+  /* ── Hero ── */
+  .hero { margin-bottom: 56px; }
+  .hero-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 12px;
+  }
+  .hero h1 {
+    font-family: 'Libre Baskerville', serif;
+    font-size: clamp(32px, 4vw, 52px);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .hero h1 em { font-style: italic; color: var(--accent); }
+  .hero-tagline {
+    font-size: 15px;
+    color: var(--ink-mid);
+    max-width: 560px;
+    margin-top: 16px;
+    line-height: 1.7;
+  }
+
+  /* ── Section titles ── */
+  .section-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  /* ── Overview cards ── */
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin-bottom: 56px;
+  }
+  .overview-card { background: var(--white); padding: 28px; }
+  .overview-card-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 12px;
+  }
+  .overview-card-title {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+  .overview-card p { font-size: 13px; color: var(--ink-mid); line-height: 1.7; }
+
+  /* ── Rationale block ── */
+  .rationale {
+    background: var(--white);
+    border: 1px solid var(--rule);
+    padding: 32px;
+    margin-bottom: 56px;
+  }
+  .rationale p { font-size: 13.5px; color: var(--ink-mid); line-height: 1.8; margin-bottom: 14px; }
+  .rationale p:last-child { margin-bottom: 0; }
+  .rationale strong { color: var(--ink); font-weight: 600; }
+
+  /* ── Stats row ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin-bottom: 56px;
+  }
+  .stat-cell { background: var(--white); padding: 24px 28px; }
+  .stat-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 8px;
+  }
+  .stat-number {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--accent);
+  }
+  .stat-sub { margin-top: 6px; font-size: 12px; color: var(--ink-light); }
+
+  /* ── Sections overview grid (clickable cards) ── */
+  .epics-overview { margin-bottom: 56px; }
+  .epics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+  }
+  .epic-card {
+    background: var(--white);
+    padding: 24px 28px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    position: relative;
+  }
+  .epic-card:hover { background: var(--accent-light); }
+  .epic-card-number {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--ink-light);
+    margin-bottom: 8px;
+  }
+  .epic-card-name {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+  .epic-card-desc { font-size: 12px; color: var(--ink-mid); line-height: 1.6; margin-bottom: 14px; }
+  .epic-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-light);
+  }
+  .epic-pill {
+    display: inline-block;
+    padding: 2px 8px;
+    background: var(--accent-light);
+    color: var(--accent);
+    border-radius: 2px;
+    font-size: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+  .epic-arrow {
+    margin-left: auto;
+    font-size: 16px;
+    color: var(--accent);
+    opacity: 0;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+  }
+  .epic-card:hover .epic-arrow { opacity: 1; transform: translateX(3px); }
+
+  /* ── Divider ── */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 56px 0;
+  }
+  .divider-line { flex: 1; height: 1px; background: var(--rule); }
+  .divider-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    white-space: nowrap;
+  }
+
+  /* ── Legend ── */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    padding: 20px 28px;
+    background: var(--white);
+    border: 1px solid var(--rule);
+    margin-bottom: 24px;
+  }
+  .legend-group { display: flex; flex-direction: column; gap: 8px; }
+  .legend-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+  }
+  .legend-items { display: flex; gap: 20px; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--ink-mid); }
+  .ldot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+  /* ── Filters ── */
+  .filters { display: flex; gap: 6px; margin-bottom: 28px; flex-wrap: wrap; }
+  .filter-btn {
+    padding: 6px 14px;
+    background: var(--white);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    color: var(--ink-mid);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.12s ease;
+  }
+  .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .filter-btn.active { background: var(--accent); border-color: var(--accent); color: white; }
+
+  /* ── Section blocks (same as epic-section) ── */
+  .epic-section { margin-bottom: 44px; }
+  .epic-header {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    padding: 14px 20px;
+    background: var(--accent);
+    color: white;
+  }
+  .epic-header-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    opacity: 0.7;
+  }
+  .epic-header-name {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .epic-header-count {
+    margin-left: auto;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    opacity: 0.6;
+  }
+
+  /* ── Table ── */
+  .table-wrap { overflow-x: auto; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--white);
+    border: 1px solid var(--rule);
+    border-top: none;
+  }
+  thead tr { border-bottom: 1px solid var(--rule); background: #fafaf8; }
+  th {
+    padding: 10px 16px;
+    text-align: left;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    font-weight: 400;
+    white-space: nowrap;
+  }
+  tbody tr { border-bottom: 1px solid #eeece8; transition: background 0.1s ease; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #fafaf8; }
+  tbody tr.hidden { display: none; }
+  td { padding: 14px 16px; vertical-align: top; line-height: 1.55; }
+  td.num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-light);
+    width: 36px;
+  }
+  .story-text { font-size: 13px; color: var(--ink); max-width: 540px; }
+
+  /* Badges */
+  .badge {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 2px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .badge-evento  { background: #e8edf3; color: var(--must);   border: 1px solid #c0cfde; }
+  .badge-risco   { background: #fdf0ee; color: #7a2a1e;       border: 1px solid #e8c0bb; }
+  .badge-metrica { background: #f5f0e8; color: var(--could);  border: 1px solid #d4c4aa; }
+  .badge-sprint  { background: #edf2eb; color: var(--should); border: 1px solid #bdd0ba; }
+  .badge-mvp     { background: #e8edf3; color: var(--must);   border: 1px solid #c0cfde; }
+
+  .q-badge { font-size: 11px; color: var(--ink-mid); white-space: nowrap; display: flex; align-items: center; gap: 6px; }
+  .q-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .q1-dot { background: var(--accent); }
+  .q2-dot { background: var(--should); }
+  .q3-dot { background: var(--could); }
+
+  .val { font-family: 'IBM Plex Mono', monospace; font-size: 11px; white-space: nowrap; }
+  .val-alto  { color: var(--accent); }
+  .val-medio { color: var(--should); }
+  .val-baixo { color: var(--ink-light); }
+
+  /* ── Footer ── */
+  footer {
+    margin-top: 64px;
+    padding-top: 20px;
+    border-top: 2px solid var(--ink);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .footer-left  { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--ink-light); }
+  .footer-right { font-family: 'Libre Baskerville', serif; font-size: 13px; font-style: italic; color: var(--accent); }
+
+  .epic-section.highlight .epic-header { outline: 3px solid var(--accent-mid); outline-offset: 2px; }
+
+  @media (max-width: 640px) {
+    .page { padding: 32px 20px 60px; }
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .topbar { flex-direction: column; align-items: flex-start; gap: 6px; }
+  }
+</style>
+</head>
+<script>
+  // Highlight the active nav link based on current filename
+  const page = window.location.pathname.split('/').pop();
+  document.querySelectorAll('.site-nav-link').forEach(link => {
+    if (link.getAttribute('href') === page) link.classList.add('active');
+  });
+</script>
+<body>
+  The snippet — paste as first element inside <body>:
+<nav class="site-nav">
+  <a class="site-nav-home" href="index.html">
+    <span class="site-nav-home-label">← Meu Deputado</span>
+  </a>
+  <div class="site-nav-links">
+    <a class="site-nav-link" href="po.html" data-nav="po">Product Owner <span class="site-nav-tag">PO</span></a>
+    <a class="site-nav-link" href="scrum_master.html" data-nav="sm">Scrum Master <span class="site-nav-tag">SM</span></a>
+    <a class="site-nav-link" href="back_end.html" data-nav="backend">Back-end <span class="site-nav-tag">Dev 1</span></a>
+    <a class="site-nav-link" href="front_end.html" data-nav="frontend">Front-end <span class="site-nav-tag">Dev 2</span></a>
+    <a class="site-nav-link" href="qa.html" data-nav="qa">Qualidade <span class="site-nav-tag">Dev 3</span></a>
+    <a class="site-nav-link" href="kanban.html" data-nav="kanban">Kanban <span class="site-nav-tag">Dev 4</span></a>
+  </div>
+</nav>
+<div class="page">
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <div class="topbar-left">UNDB · Gestão Ágil de Projetos · 2026.1 · Desafio 4.0</div>
+    <div class="topbar-right">Visão do Scrum Master</div>
+  </div>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-label">Apresentação — Scrum Master</div>
+    <h1>Meu<br><em>Deputado</em></h1>
+    <p class="hero-tagline">Aplicativo mobile de acompanhamento do mandato de deputados federais brasileiros. Estruturado com base no framework Scrum Alliance — entregas incrementais, foco em valor e transparência no desenvolvimento.</p>
+  </div>
+
+  <!-- SM Overview -->
+  <div class="section-title">Visão do Scrum Master</div>
+  <div class="overview-grid">
+    <div class="overview-card">
+      <div class="overview-card-label">O Projeto</div>
+      <div class="overview-card-title">Transparência na palma da mão</div>
+      <p>O <strong>Meu Deputado</strong> permite que cidadãos acompanhem de forma clara e comparativa o desempenho de deputados federais — atividade parlamentar, indicadores, finanças e notificações.</p>
+    </div>
+    <div class="overview-card">
+      <div class="overview-card-label">Framework</div>
+      <div class="overview-card-title">Scrum Alliance Scrum</div>
+      <p>O projeto segue práticas ágeis modernas com Sprints de 2 semanas, eventos estruturados e papéis bem definidos — garantindo cadência, inspeção e adaptação contínua.</p>
+    </div>
+    <div class="overview-card">
+      <div class="overview-card-label">Priorização</div>
+      <div class="overview-card-title">MoSCoW + Valor × Esforço</div>
+      <p>O backlog foi priorizado combinando as técnicas MoSCoW e Matriz Valor × Esforço, garantindo que o MVP entregue primeiro o que gera mais impacto com menor complexidade.</p>
+    </div>
+    <div class="overview-card">
+      <div class="overview-card-label">Papel do SM</div>
+      <div class="overview-card-title">Guardião do processo</div>
+      <p>Como Scrum Master, meu papel foi garantir a correta aplicação do framework, facilitar eventos, remover impedimentos e proteger o time para que entregasse valor real a cada Sprint.</p>
+    </div>
+  </div>
+
+  <!-- Rationale -->
+  <div class="section-title">Responsabilidades e Abordagem</div>
+  <div class="rationale">
+    <p>Como <strong>Scrum Master</strong>, minha atuação foi orientada a garantir que o time tivesse as condições necessárias para entregar valor real a cada Sprint, mantendo alinhamento com os objetivos do produto e os princípios ágeis.</p>
+    <p>Nas <strong>cerimônias</strong>, facilitei os eventos Scrum — Sprint Planning, Daily Scrum, Sprint Review e Sprint Retrospective — assegurando que cada um cumprisse seu propósito dentro do timebox definido. Na Sprint Planning, apoiei a definição de metas claras e alcançáveis; nas Dailies, removi ruídos e mantive o foco no progresso; nas Reviews, preparei o time para apresentar incrementos funcionais; e nas Retros, conduzi análises honestas sobre o que melhorar.</p>
+    <p>Na <strong>gestão de riscos</strong>, atuei de forma preventiva, antecipando obstáculos como a complexidade das APIs externas e o alto esforço dos indicadores comparativos, facilitando decisões junto ao Product Owner antes que os riscos se tornassem impedimentos reais.</p>
+    <p>As <strong>métricas acompanhadas</strong> — velocity, burndown, cumprimento de Sprint Goal e taxa de retrabalho — garantiram previsibilidade ao processo e embasaram as decisões de ajuste ao longo das Sprints.</p>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-cell">
+      <div class="stat-label">Sprints Planejadas</div>
+      <div class="stat-number">5</div>
+      <div class="stat-sub">2 semanas cada</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-label">Épicos</div>
+      <div class="stat-number">7</div>
+      <div class="stat-sub">estruturas do produto</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-label">Histórias de Usuário</div>
+      <div class="stat-number">35</div>
+      <div class="stat-sub">priorizadas no backlog</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-label">Must Have (MVP)</div>
+      <div class="stat-number" style="color:#1a3a5c">17</div>
+      <div class="stat-sub">entregues prioritariamente</div>
+    </div>
+  </div>
+
+  <!-- Sections overview -->
+  <div class="epics-overview">
+    <div class="section-title">Seções da Apresentação — visão geral</div>
+    <div class="epics-grid">
+      <div class="epic-card" onclick="scrollToSection('sec1')">
+        <div class="epic-card-number">SEÇÃO 01</div>
+        <div class="epic-card-name">Introdução ao Projeto</div>
+        <div class="epic-card-desc">Contexto, objetivos do Meu Deputado e framework adotado.</div>
+        <div class="epic-card-meta"><span class="epic-pill">Contexto</span><span class="epic-arrow">→</span></div>
+      </div>
+      <div class="epic-card" onclick="scrollToSection('sec2')">
+        <div class="epic-card-number">SEÇÃO 02</div>
+        <div class="epic-card-name">Estrutura do Projeto</div>
+        <div class="epic-card-desc">Backlog, épicos, histórias e critérios de priorização.</div>
+        <div class="epic-card-meta"><span class="epic-pill">Backlog</span><span class="epic-arrow">→</span></div>
+      </div>
+      <div class="epic-card" onclick="scrollToSection('sec3')">
+        <div class="epic-card-number">SEÇÃO 03</div>
+        <div class="epic-card-name">Time Scrum</div>
+        <div class="epic-card-desc">Composição da equipe e responsabilidades do Scrum Master.</div>
+        <div class="epic-card-meta"><span class="epic-pill">Papéis</span><span class="epic-arrow">→</span></div>
+      </div>
+      <div class="epic-card" onclick="scrollToSection('sec4')">
+        <div class="epic-card-number">SEÇÃO 04</div>
+        <div class="epic-card-name">Planejamento das Sprints</div>
+        <div class="epic-card-desc">5 Sprints com metas, entregas e escopo detalhado.</div>
+        <div class="epic-card-meta"><span class="epic-pill">5 Sprints</span><span class="epic-arrow">→</span></div>
+      </div>
+      <div class="epic-card" onclick="scrollToSection('sec5')">
+        <div class="epic-card-number">SEÇÃO 05</div>
+        <div class="epic-card-name">Eventos Scrum</div>
+        <div class="epic-card-desc">Planning, Daily, Review e Retrospective aplicados no projeto.</div>
+        <div class="epic-card-meta"><span class="epic-pill">4 Eventos</span><span class="epic-arrow">→</span></div>
+      </div>
+      <div class="epic-card" onclick="scrollToSection('sec6')">
+        <div class="epic-card-number">SEÇÃO 06</div>
+        <div class="epic-card-name">Riscos e Métricas</div>
+        <div class="epic-card-desc">Riscos identificados, mitigação e métricas de acompanhamento.</div>
+        <div class="epic-card-meta"><span class="epic-pill">4 Riscos</span><span class="epic-arrow">→</span></div>
+      </div>
+      <div class="epic-card" onclick="scrollToSection('sec7')">
+        <div class="epic-card-number">SEÇÃO 07</div>
+        <div class="epic-card-name">MVP e Conclusão</div>
+        <div class="epic-card-desc">Resultado esperado do MVP e conclusão estratégica da apresentação.</div>
+        <div class="epic-card-meta"><span class="epic-pill">7 Entregas</span><span class="epic-arrow">→</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Divider -->
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-label">Roteiro Completo</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-group">
+      <div class="legend-title">Tipo de Item</div>
+      <div class="legend-items">
+        <div class="legend-item"><span class="ldot" style="background:#1a3a5c"></span>Evento Scrum</div>
+        <div class="legend-item"><span class="ldot" style="background:#7a2a1e"></span>Risco</div>
+        <div class="legend-item"><span class="ldot" style="background:#7a5c32"></span>Métrica</div>
+        <div class="legend-item"><span class="ldot" style="background:#4a6741"></span>Sprint</div>
+        <div class="legend-item"><span class="ldot" style="background:#1a3a5c"></span>MVP</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters">
+    <button class="filter-btn active" onclick="filterAll(this)">Todos</button>
+    <button class="filter-btn" onclick="filterBy(this,'evento')">Eventos</button>
+    <button class="filter-btn" onclick="filterBy(this,'sprint')">Sprints</button>
+    <button class="filter-btn" onclick="filterBy(this,'risco')">Riscos</button>
+    <button class="filter-btn" onclick="filterBy(this,'metrica')">Métricas</button>
+    <button class="filter-btn" onclick="filterBy(this,'mvp')">MVP</button>
+  </div>
+
+  <!-- SEÇÃO 01 — Introdução -->
+  <div class="epic-section" id="sec1">
+    <div class="epic-header">
+      <span class="epic-header-num">SEÇÃO 01</span>
+      <span class="epic-header-name">Introdução ao Projeto</span>
+      <span class="epic-header-count">5 itens</span>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>#</th><th>Tópico</th><th>Descrição</th><th>Tipo</th></tr></thead>
+      <tbody>
+        <tr data-tipo="contexto"><td class="num">01</td><td class="story-text"><strong>Atividade parlamentar</strong></td><td class="story-text">Acompanhamento de votações, presença e projetos de lei do deputado selecionado.</td><td><span class="badge badge-mvp">CONTEXTO</span></td></tr>
+        <tr data-tipo="contexto"><td class="num">02</td><td class="story-text"><strong>Indicadores de desempenho</strong></td><td class="story-text">KPIs objetivos do mandato: taxa de presença, aprovação de projetos e alinhamento partidário.</td><td><span class="badge badge-mvp">CONTEXTO</span></td></tr>
+        <tr data-tipo="contexto"><td class="num">03</td><td class="story-text"><strong>Transparência financeira</strong></td><td class="story-text">Gastos com cota parlamentar, emendas destinadas e detalhamento de despesas.</td><td><span class="badge badge-mvp">CONTEXTO</span></td></tr>
+        <tr data-tipo="contexto"><td class="num">04</td><td class="story-text"><strong>Comparativos com a Câmara</strong></td><td class="story-text">Posicionamento do deputado em relação às médias gerais da Câmara Federal.</td><td><span class="badge badge-mvp">CONTEXTO</span></td></tr>
+        <tr data-tipo="contexto"><td class="num">05</td><td class="story-text"><strong>Sistema de notificações</strong></td><td class="story-text">Alertas em tempo real sobre votações, faltas e movimentações de emendas.</td><td><span class="badge badge-mvp">CONTEXTO</span></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <!-- SEÇÃO 02 — Estrutura do Projeto -->
+  <div class="epic-section" id="sec2">
+    <div class="epic-header">
+      <span class="epic-header-num">SEÇÃO 02</span>
+      <span class="epic-header-name">Estrutura do Projeto</span>
+      <span class="epic-header-count">4 itens</span>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>#</th><th>Elemento</th><th>Detalhe</th><th>Tipo</th></tr></thead>
+      <tbody>
+        <tr data-tipo="contexto"><td class="num">01</td><td class="story-text"><strong>7 Épicos</strong></td><td class="story-text">Autenticação · Perfil Parlamentar · Atividade Legislativa · Financeiro · Indicadores · Comparativos · Notificações.</td><td><span class="badge badge-mvp">BACKLOG</span></td></tr>
+        <tr data-tipo="contexto"><td class="num">02</td><td class="story-text"><strong>35 Histórias de Usuário</strong></td><td class="story-text">Priorizadas e distribuídas nos 7 épicos com critérios claros de valor e esforço.</td><td><span class="badge badge-mvp">BACKLOG</span></td></tr>
+        <tr data-tipo="contexto"><td class="num">03</td><td class="story-text"><strong>Priorização MoSCoW</strong></td><td class="story-text">17 Must Have · 15 Should Have · 3 Could Have — camadas de prioridade para o MVP.</td><td><span class="badge badge-mvp">BACKLOG</span></td></tr>
+        <tr data-tipo="contexto"><td class="num">04</td><td class="story-text"><strong>Matriz Valor × Esforço</strong></td><td class="story-text">Q1 (prioridade máxima) entregue primeiro — alto valor com baixo esforço.</td><td><span class="badge badge-mvp">BACKLOG</span></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <!-- SEÇÃO 03 — Time Scrum -->
+  <div class="epic-section" id="sec3">
+    <div class="epic-header">
+      <span class="epic-header-num">SEÇÃO 03</span>
+      <span class="epic-header-name">Time Scrum</span>
+      <span class="epic-header-count">6 itens</span>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>#</th><th>Papel</th><th>Responsabilidade Principal</th><th>Tipo</th></tr></thead>
+      <tbody>
+        <tr data-tipo="contexto"><td class="num">01</td><td class="story-text"><strong>Product Owner</strong></td><td class="story-text">Define a visão do produto, prioriza o backlog e representa os interesses dos stakeholders.</td><td><span class="badge badge-mvp">PAPEL</span></td></tr>
+        <tr data-tipo="contexto"><td class="num">02</td><td class="story-text"><strong>Scrum Master</strong></td><td class="story-text">Garante a aplicação correta do framework, facilita eventos, remove impedimentos e protege o time.</td><td><span class="badge badge-mvp">PAPEL</span></td></tr>
+        <tr data-tipo="contexto"><td class="num">03</td><td class="story-text"><strong>Front-end / UX</strong></td><td class="story-text">Interface, experiência do usuário, componentes visuais e responsividade do aplicativo.</td><td><span class="badge badge-sprint">DEV TEAM</span></td></tr>
+        <tr data-tipo="contexto"><td class="num">04</td><td class="story-text"><strong>Back-end</strong></td><td class="story-text">APIs, integrações com dados públicos da Câmara, lógica de negócio e persistência.</td><td><span class="badge badge-sprint">DEV TEAM</span></td></tr>
+        <tr data-tipo="contexto"><td class="num">05</td><td class="story-text"><strong>QA</strong></td><td class="story-text">Testes, validação de critérios de aceite e garantia da qualidade das entregas incrementais.</td><td><span class="badge badge-sprint">DEV TEAM</span></td></tr>
+        <tr data-tipo="contexto"><td class="num">06</td><td class="story-text"><strong>Dev Kanban</strong></td><td class="story-text">Gerencia o quadro visual, define e monitora (WIP) e acompanha a evolução das tarefas para garantir fluxo contínuo da Sprint.</td><td><span class="badge badge-sprint">DEV TEAM</span></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <!-- SEÇÃO 04 — Planejamento das Sprints -->
+  <div class="epic-section" id="sec4">
+    <div class="epic-header">
+      <span class="epic-header-num">SEÇÃO 04</span>
+      <span class="epic-header-name">Planejamento das Sprints</span>
+      <span class="epic-header-count">5 Sprints · 2 semanas cada</span>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>#</th><th>Sprint</th><th>Escopo Principal</th><th>Meta</th><th>Tipo</th></tr></thead>
+      <tbody>
+        <tr data-tipo="sprint"><td class="num">S1</td><td class="story-text"><strong>Base do Sistema</strong></td><td class="story-text">Cadastro · Login · Seleção de deputado · Perfil básico</td><td class="story-text" style="font-size:12px;color:var(--ink-mid);font-style:italic;">Usuário consegue acessar e acompanhar um deputado.</td><td><span class="badge badge-sprint">SPRINT</span></td></tr>
+        <tr data-tipo="sprint"><td class="num">S2</td><td class="story-text"><strong>Atividade Parlamentar</strong></td><td class="story-text">Votações · Presença · Projetos de lei · Taxa de presença</td><td class="story-text" style="font-size:12px;color:var(--ink-mid);font-style:italic;">Acompanhar atuação legislativa.</td><td><span class="badge badge-sprint">SPRINT</span></td></tr>
+        <tr data-tipo="sprint"><td class="num">S3</td><td class="story-text"><strong>Transparência Financeira</strong></td><td class="story-text">Gastos com cota parlamentar · Detalhamento de despesas · Emendas parlamentares</td><td class="story-text" style="font-size:12px;color:var(--ink-mid);font-style:italic;">Transparência de recursos públicos.</td><td><span class="badge badge-sprint">SPRINT</span></td></tr>
+        <tr data-tipo="sprint"><td class="num">S4</td><td class="story-text"><strong>Indicadores e Dashboard</strong></td><td class="story-text">Painel consolidado · Comparativos com média da Câmara · Visualização gráfica</td><td class="story-text" style="font-size:12px;color:var(--ink-mid);font-style:italic;">Visão estratégica do desempenho.</td><td><span class="badge badge-sprint">SPRINT</span></td></tr>
+        <tr data-tipo="sprint"><td class="num">S5</td><td class="story-text"><strong>Notificações</strong></td><td class="story-text">Alertas de votação · Alertas de ausência · Configuração personalizada</td><td class="story-text" style="font-size:12px;color:var(--ink-mid);font-style:italic;">Engajamento contínuo do usuário.</td><td><span class="badge badge-sprint">SPRINT</span></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <!-- SEÇÃO 05 — Eventos Scrum -->
+  <div class="epic-section" id="sec5">
+    <div class="epic-header">
+      <span class="epic-header-num">SEÇÃO 05</span>
+      <span class="epic-header-name">Eventos Scrum Aplicados</span>
+      <span class="epic-header-count">4 eventos</span>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>#</th><th>Evento</th><th>Descrição</th><th>Tipo</th></tr></thead>
+      <tbody>
+        <tr data-tipo="evento"><td class="num">01</td><td class="story-text"><strong>Sprint Planning</strong></td><td class="story-text">Definição da meta da Sprint e seleção das histórias priorizadas do backlog para o ciclo.</td><td><span class="badge badge-evento">EVENTO</span></td></tr>
+        <tr data-tipo="evento"><td class="num">02</td><td class="story-text"><strong>Daily Scrum</strong></td><td class="story-text">Reuniões diárias de 15 minutos para acompanhamento, sincronização e remoção de bloqueios.</td><td><span class="badge badge-evento">EVENTO</span></td></tr>
+        <tr data-tipo="evento"><td class="num">03</td><td class="story-text"><strong>Sprint Review</strong></td><td class="story-text">Apresentação do incremento funcional aos stakeholders para inspeção e coleta de feedback.</td><td><span class="badge badge-evento">EVENTO</span></td></tr>
+        <tr data-tipo="evento"><td class="num">04</td><td class="story-text"><strong>Sprint Retrospective</strong></td><td class="story-text">Análise do processo com foco em melhorias contínuas a serem aplicadas no próximo ciclo.</td><td><span class="badge badge-evento">EVENTO</span></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <!-- SEÇÃO 06 — Riscos e Métricas -->
+  <div class="epic-section" id="sec6">
+    <div class="epic-header">
+      <span class="epic-header-num">SEÇÃO 06</span>
+      <span class="epic-header-name">Riscos Identificados e Métricas</span>
+      <span class="epic-header-count">8 itens</span>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>#</th><th>Item</th><th>Descrição</th><th>Tipo</th></tr></thead>
+      <tbody>
+        <tr data-tipo="risco"><td class="num">R1</td><td class="story-text"><strong>Complexidade de dados públicos</strong></td><td class="story-text">Estrutura e qualidade variável dos dados abertos da Câmara podem impactar integração e processamento.</td><td><span class="badge badge-risco">RISCO</span></td></tr>
+        <tr data-tipo="risco"><td class="num">R2</td><td class="story-text"><strong>Alto esforço em indicadores comparativos</strong></td><td class="story-text">Cruzamento de informações para indicadores exige lógica elaborada e alto esforço técnico.</td><td><span class="badge badge-risco">RISCO</span></td></tr>
+        <tr data-tipo="risco"><td class="num">R3</td><td class="story-text"><strong>Integração de notificações push</strong></td><td class="story-text">Alertas em tempo real representam desafio técnico significativo de infraestrutura.</td><td><span class="badge badge-risco">RISCO</span></td></tr>
+        <tr data-tipo="risco"><td class="num">R4</td><td class="story-text"><strong>Dependência de APIs externas</strong></td><td class="story-text">Instabilidades nas APIs do governo podem bloquear entregas e atrasar sprints.</td><td><span class="badge badge-risco">RISCO</span></td></tr>
+        <tr data-tipo="metrica"><td class="num">M1</td><td class="story-text"><strong>Velocity média do time</strong></td><td class="story-text">Capacidade real de entrega do time a cada Sprint — base para planejamento futuro.</td><td><span class="badge badge-metrica">MÉTRICA</span></td></tr>
+        <tr data-tipo="metrica"><td class="num">M2</td><td class="story-text"><strong>Burndown Chart</strong></td><td class="story-text">Visualização do progresso das histórias ao longo do Sprint para garantir previsibilidade.</td><td><span class="badge badge-metrica">MÉTRICA</span></td></tr>
+        <tr data-tipo="metrica"><td class="num">M3</td><td class="story-text"><strong>Cumprimento do Sprint Goal</strong></td><td class="story-text">Percentual de metas de Sprint alcançadas — indicador de foco e alinhamento do time.</td><td><span class="badge badge-metrica">MÉTRICA</span></td></tr>
+        <tr data-tipo="metrica"><td class="num">M4</td><td class="story-text"><strong>Taxa de retrabalho</strong></td><td class="story-text">Proporção de histórias que precisaram ser revisadas após aceite — indicador de qualidade.</td><td><span class="badge badge-metrica">MÉTRICA</span></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <!-- SEÇÃO 07 — MVP e Conclusão -->
+  <div class="epic-section" id="sec7">
+    <div class="epic-header">
+      <span class="epic-header-num">SEÇÃO 07</span>
+      <span class="epic-header-name">Resultado Esperado do MVP e Conclusão</span>
+      <span class="epic-header-count">11 itens</span>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>#</th><th>Entrega / Pilar</th><th>Descrição</th><th>Tipo</th></tr></thead>
+      <tbody>
+        <tr data-tipo="mvp"><td class="num">01</td><td class="story-text"><strong>Criar conta</strong></td><td class="story-text">Usuário pode se cadastrar e acessar o aplicativo com credenciais próprias.</td><td><span class="badge badge-mvp">MVP</span></td></tr>
+        <tr data-tipo="mvp"><td class="num">02</td><td class="story-text"><strong>Selecionar deputado</strong></td><td class="story-text">Usuário escolhe o parlamentar que deseja acompanhar ao longo do mandato.</td><td><span class="badge badge-mvp">MVP</span></td></tr>
+        <tr data-tipo="mvp"><td class="num">03</td><td class="story-text"><strong>Ver votações</strong></td><td class="story-text">Acesso ao histórico de votos do deputado em plenário com posicionamento registrado.</td><td><span class="badge badge-mvp">MVP</span></td></tr>
+        <tr data-tipo="mvp"><td class="num">04</td><td class="story-text"><strong>Ver presença</strong></td><td class="story-text">Acompanhamento da frequência do deputado nas sessões plenárias.</td><td><span class="badge badge-mvp">MVP</span></td></tr>
+        <tr data-tipo="mvp"><td class="num">05</td><td class="story-text"><strong>Ver gastos</strong></td><td class="story-text">Consulta aos gastos com cota parlamentar e detalhamento por categoria de despesa.</td><td><span class="badge badge-mvp">MVP</span></td></tr>
+        <tr data-tipo="mvp"><td class="num">06</td><td class="story-text"><strong>Acompanhar indicadores</strong></td><td class="story-text">Painel com KPIs objetivos do mandato para avaliação do desempenho parlamentar.</td><td><span class="badge badge-mvp">MVP</span></td></tr>
+        <tr data-tipo="mvp"><td class="num">07</td><td class="story-text"><strong>Receber notificações</strong></td><td class="story-text">Alertas automáticos sobre votações e ausências do deputado acompanhado.</td><td><span class="badge badge-mvp">MVP</span></td></tr>
+        <tr data-tipo="contexto"><td class="num">C1</td><td class="story-text"><strong>Entregas incrementais</strong></td><td class="story-text">O Scrum permitiu entregas funcionais a cada Sprint, reduzindo risco e aumentando aprendizado.</td><td><span class="badge badge-evento">CONCLUSÃO</span></td></tr>
+        <tr data-tipo="contexto"><td class="num">C2</td><td class="story-text"><strong>Foco em valor</strong></td><td class="story-text">Cada Sprint foi orientada a entregar o que mais importa para o usuário e para o produto.</td><td><span class="badge badge-evento">CONCLUSÃO</span></td></tr>
+        <tr data-tipo="contexto"><td class="num">C3</td><td class="story-text"><strong>Transparência no desenvolvimento</strong></td><td class="story-text">Eventos Scrum garantiram visibilidade do progresso para o time e stakeholders.</td><td><span class="badge badge-evento">CONCLUSÃO</span></td></tr>
+        <tr data-tipo="contexto"><td class="num">C4</td><td class="story-text"><strong>Adaptação contínua</strong></td><td class="story-text">Retrospectivas e métricas permitiram ajustes reais ao processo a cada ciclo.</td><td><span class="badge badge-evento">CONCLUSÃO</span></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <footer>
+    <div class="footer-left">UNDB · Gestão Ágil de Projetos · 2026.1 · Roteiro Scrum Master v1.0</div>
+    <div class="footer-right">Meu Deputado — Visão do Scrum Master</div>
+  </footer>
+
+</div>
+
+<script>
+  function filterAll(btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('tbody tr').forEach(r => r.classList.remove('hidden'));
+    document.querySelectorAll('.epic-section').forEach(s => s.style.display = '');
+  }
+
+  function filterBy(btn, key) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('tbody tr').forEach(r => {
+      const match = r.dataset.tipo === key;
+      r.classList.toggle('hidden', !match);
+    });
+    document.querySelectorAll('.epic-section').forEach(section => {
+      const rows = section.querySelectorAll('tbody tr');
+      const allHidden = Array.from(rows).every(r => r.classList.contains('hidden'));
+      section.style.display = allHidden ? 'none' : '';
+    });
+  }
+
+  function scrollToSection(id) {
+    const target = document.getElementById(id);
+    if (!target) return;
+    document.querySelectorAll('tbody tr').forEach(r => r.classList.remove('hidden'));
+    document.querySelectorAll('.epic-section').forEach(s => s.style.display = '');
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.filter-btn').classList.add('active');
+    const top = target.getBoundingClientRect().top + window.scrollY - 32;
+    window.scrollTo({ top, behavior: 'smooth' });
+    target.classList.add('highlight');
+    setTimeout(() => target.classList.remove('highlight'), 1800);
+  }
+</script>
+</body>
+</html>

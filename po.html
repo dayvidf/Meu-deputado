@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meu Deputado — Product Backlog</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+.site-nav {
+  border-bottom: 1px solid #d8d5ce;
+  padding: 0 48px;
+  background: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 0;
+}
+.site-nav-home {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  padding: 14px 0;
+  margin-right: 32px;
+  border-right: 1px solid #d8d5ce;
+  padding-right: 32px;
+  gap: 10px;
+}
+.site-nav-home-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #1a3a5c;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.site-nav-home:hover .site-nav-home-label { text-decoration: underline; }
+.site-nav-links {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  flex: 1;
+}
+.site-nav-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  padding: 0 16px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #888888;
+  border-bottom: 2px solid transparent;
+  transition: color 0.12s ease, border-color 0.12s ease;
+  white-space: nowrap;
+}
+.site-nav-link:hover { color: #1a3a5c; }
+.site-nav-link.active { color: #1a3a5c; border-bottom-color: #1a3a5c; }
+.site-nav-tag {
+  display: inline-block;
+  padding: 2px 6px;
+  background: #e8eef4;
+  color: #1a3a5c;
+  border-radius: 2px;
+  font-size: 8px;
+  margin-left: 6px;
+  letter-spacing: 0.08em;
+}
+@media (max-width: 768px) {
+  .site-nav { padding: 0 16px; overflow-x: auto; }
+  .site-nav-link { padding: 0 10px; font-size: 9px; }
+  .site-nav-tag { display: none; }
+}
+</style>
+<style>
+  :root {
+    --bg: #f5f4f0;
+    --white: #ffffff;
+    --ink: #1a1a1a;
+    --ink-mid: #444444;
+    --ink-light: #888888;
+    --rule: #d8d5ce;
+    --accent: #1a3a5c;
+    --accent-mid: #2e5f8a;
+    --accent-light: #e8eef4;
+    --must: #1a3a5c;
+    --should: #4a6741;
+    --could: #7a5c32;
+    --q1-bg: #eef3f8;
+    --q1-border: #b0c8de;
+    --q2-bg: #f0f5ee;
+    --q2-border: #aec4ab;
+    --q3-bg: #faf7f2;
+    --q3-border: #d4c4aa;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* ── Layout ── */
+  .page { max-width: 1100px; margin: 0 auto; padding: 56px 40px 80px; }
+
+  /* ── Top bar ── */
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--ink);
+    margin-bottom: 48px;
+  }
+
+  .topbar-left {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-light);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* ── Hero ── */
+  .hero { margin-bottom: 56px; }
+
+  .hero-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 12px;
+  }
+
+  .hero h1 {
+    font-family: 'Libre Baskerville', serif;
+    font-size: clamp(32px, 4vw, 52px);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-tagline {
+    font-size: 15px;
+    color: var(--ink-mid);
+    max-width: 560px;
+    margin-top: 16px;
+    line-height: 1.7;
+  }
+
+  /* ── Section titles ── */
+  .section-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  /* ── PO Overview cards ── */
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin-bottom: 56px;
+}
+
+  .overview-card {
+    background: var(--white);
+    padding: 28px;
+  }
+
+  .overview-card-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 12px;
+  }
+
+  .overview-card-title {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  .overview-card p {
+    font-size: 13px;
+    color: var(--ink-mid);
+    line-height: 1.7;
+  }
+
+  /* ── Priorities rationale ── */
+  .rationale {
+    background: var(--white);
+    border: 1px solid var(--rule);
+    padding: 32px;
+    margin-bottom: 56px;
+  }
+
+  .rationale p {
+    font-size: 13.5px;
+    color: var(--ink-mid);
+    line-height: 1.8;
+    margin-bottom: 14px;
+  }
+
+  .rationale p:last-child { margin-bottom: 0; }
+
+  .rationale strong { color: var(--ink); font-weight: 600; }
+
+  /* ── Stats row ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin-bottom: 56px;
+  }
+
+  .stat-cell {
+    background: var(--white);
+    padding: 24px 28px;
+  }
+
+  .stat-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 8px;
+  }
+
+  .stat-number {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--accent);
+  }
+
+  .stat-sub {
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--ink-light);
+  }
+
+  /* ── Epics Overview ── */
+  .epics-overview {
+    margin-bottom: 56px;
+  }
+
+  .epics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+  }
+
+  .epic-card {
+    background: var(--white);
+    padding: 24px 28px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    position: relative;
+  }
+
+  .epic-card:hover { background: var(--accent-light); }
+
+  .epic-card-number {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--ink-light);
+    margin-bottom: 8px;
+  }
+
+  .epic-card-name {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+
+  .epic-card-desc {
+    font-size: 12px;
+    color: var(--ink-mid);
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+
+  .epic-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-light);
+  }
+
+  .epic-pill {
+    display: inline-block;
+    padding: 2px 8px;
+    background: var(--accent-light);
+    color: var(--accent);
+    border-radius: 2px;
+    font-size: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+
+  .epic-arrow {
+    margin-left: auto;
+    font-size: 16px;
+    color: var(--accent);
+    opacity: 0;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+  }
+
+  .epic-card:hover .epic-arrow { opacity: 1; transform: translateX(3px); }
+
+  /* ── Divider ── */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 56px 0;
+  }
+
+  .divider-line { flex: 1; height: 1px; background: var(--rule); }
+
+  .divider-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    white-space: nowrap;
+  }
+
+  /* ── Legend ── */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    padding: 20px 28px;
+    background: var(--white);
+    border: 1px solid var(--rule);
+    margin-bottom: 24px;
+  }
+
+  .legend-group { display: flex; flex-direction: column; gap: 8px; }
+
+  .legend-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+  }
+
+  .legend-items { display: flex; gap: 20px; flex-wrap: wrap; }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    color: var(--ink-mid);
+  }
+
+  .ldot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+  /* ── Filters ── */
+  .filters {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    padding: 6px 14px;
+    background: var(--white);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    color: var(--ink-mid);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.12s ease;
+  }
+
+  .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .filter-btn.active { background: var(--accent); border-color: var(--accent); color: white; }
+
+  /* ── Epic sections ── */
+  .epic-section { margin-bottom: 44px; }
+
+  .epic-header {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    padding: 14px 20px;
+    background: var(--accent);
+    color: white;
+    margin-bottom: 0;
+  }
+
+  .epic-header-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    opacity: 0.7;
+  }
+
+  .epic-header-name {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .epic-header-count {
+    margin-left: auto;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    opacity: 0.6;
+  }
+
+  /* ── Table ── */
+  .table-wrap { overflow-x: auto; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--white);
+    border: 1px solid var(--rule);
+    border-top: none;
+  }
+
+  thead tr { border-bottom: 1px solid var(--rule); background: #fafaf8; }
+
+  th {
+    padding: 10px 16px;
+    text-align: left;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    font-weight: 400;
+    white-space: nowrap;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid #eeece8;
+    transition: background 0.1s ease;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #fafaf8; }
+  tbody tr.hidden { display: none; }
+
+  td {
+    padding: 14px 16px;
+    vertical-align: top;
+    line-height: 1.55;
+  }
+
+  td.num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-light);
+    width: 36px;
+  }
+
+  .story-text {
+    font-size: 13px;
+    color: var(--ink);
+    max-width: 480px;
+  }
+
+  /* Badges */
+  .badge {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 2px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .badge-must { background: #e8edf3; color: var(--must); border: 1px solid #c0cfde; }
+  .badge-should { background: #edf2eb; color: var(--should); border: 1px solid #bdd0ba; }
+  .badge-could { background: #f5f0e8; color: var(--could); border: 1px solid #d4c4aa; }
+
+  .q-badge {
+    font-size: 11px;
+    color: var(--ink-mid);
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .q-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .q1-dot { background: var(--accent); }
+  .q2-dot { background: var(--should); }
+  .q3-dot { background: var(--could); }
+
+  .val { font-family: 'IBM Plex Mono', monospace; font-size: 11px; white-space: nowrap; }
+  .val-alto { color: var(--accent); }
+  .val-medio { color: var(--should); }
+  .val-baixo { color: var(--ink-light); }
+
+  /* ── Footer ── */
+  footer {
+    margin-top: 64px;
+    padding-top: 20px;
+    border-top: 2px solid var(--ink);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .footer-left {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-light);
+  }
+
+  /* ── Scroll target highlight ── */
+  .epic-section.highlight .epic-header {
+    outline: 3px solid var(--accent-mid);
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 640px) {
+    .page { padding: 32px 20px 60px; }
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .topbar { flex-direction: column; align-items: flex-start; gap: 6px; }
+  }
+</style>
+</head>
+<script>
+  // Highlight the active nav link based on current filename
+  const page = window.location.pathname.split('/').pop();
+  document.querySelectorAll('.site-nav-link').forEach(link => {
+    if (link.getAttribute('href') === page) link.classList.add('active');
+  });
+</script>
+<body>
+  <nav class="site-nav">
+  <a class="site-nav-home" href="index.html">
+    <span class="site-nav-home-label">← Meu Deputado</span>
+  </a>
+  <div class="site-nav-links">
+    <a class="site-nav-link" href="po.html" data-nav="po">Product Owner <span class="site-nav-tag">PO</span></a>
+    <a class="site-nav-link" href="scrum_master.html" data-nav="sm">Scrum Master <span class="site-nav-tag">SM</span></a>
+    <a class="site-nav-link" href="back_end.html" data-nav="backend">Back-end <span class="site-nav-tag">Dev 1</span></a>
+    <a class="site-nav-link" href="front_end.html" data-nav="frontend">Front-end <span class="site-nav-tag">Dev 2</span></a>
+    <a class="site-nav-link" href="qa.html" data-nav="qa">Qualidade <span class="site-nav-tag">Dev 3</span></a>
+    <a class="site-nav-link" href="kanban.html" data-nav="kanban">Kanban <span class="site-nav-tag">Dev 4</span></a>
+  </div>
+</nav>
+<div class="page">
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <div class="topbar-left">UNDB · Gestão Ágil de Projetos · 2026.1 · Desafio 4.0</div>
+  </div>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-label">Product Backlog — v1.0</div>
+    <h1>Meu<br><em>Deputado</em></h1>
+    <p class="hero-tagline">Aplicativo mobile de acompanhamento do mandato de deputados federais brasileiros. Transparência, responsabilidade e simplicidade — a serviço da cidadania.</p>
+  </div>
+
+  <!-- PO Overview -->
+  <div class="section-title">Visão do Produto</div>
+  <div class="overview-grid">
+    <div class="overview-card">
+      <div class="overview-card-label">O Problema</div>
+      <div class="overview-card-title">Dados públicos, acesso improvável</div>
+      <p>As informações sobre o trabalho dos deputados federais são públicas, mas estão dispersas em portais governamentais complexos, inacessíveis para a maior parte da população.</p>
+    </div>
+    <div class="overview-card">
+      <div class="overview-card-label">A Solução</div>
+      <div class="overview-card-title">Transparência na palma da mão</div>
+      <p>O <strong>Meu Deputado</strong> centraliza e apresenta esses dados de forma visual, clara e acessível, conectado à API de Dados Abertos da Câmara dos Deputados.</p>
+    </div>
+    <div class="overview-card">
+      <div class="overview-card-label">Público-alvo</div>
+      <div class="overview-card-title">O eleitor consciente</div>
+      <p>Cidadãos brasileiros com 16 anos ou mais que desejam acompanhar o trabalho do deputado de sua escolha, do eleitor casual ao cidadão politicamente engajado.</p>
+    </div>
+    <div class="overview-card">
+      <div class="overview-card-label">Decisão de Escopo</div>
+      <div class="overview-card-title">Dados, não editorial</div>
+      <p>O app apresenta indicadores objetivos e neutros derivados da API pública. Não há curadoria editorial nem análise ideológica. O usuário interpreta, o dado informa.</p>
+    </div>
+  </div>
+
+  <!-- Rationale -->
+  <div class="section-title">Critérios de Priorização</div>
+  <div class="rationale">
+    <p>A técnica de priorização escolhida foi a matriz <strong>Valor × Esforço</strong> como critério principal, com o método <strong>MoSCoW</strong> como lógica secundária.</p>
+    <p>Optamos por essa combinação porque o projeto reúne funcionalidades com níveis de complexidade muito distintos. Algumas são diretas de implementar, pois os dados já estão disponíveis na API e exigem pouco processamento. Outras demandam cruzamento de informações e lógica mais elaborada, aumentando significativamente o esforço técnico. Por isso, o eixo de esforço foi especialmente relevante para esse projeto.</p>
+    <p>O eixo de valor, por sua vez, nos ajudou a identificar quais funcionalidades geram impacto real para o usuário desde as primeiras entregas. Cruzando os dois critérios, conseguimos organizar o backlog em quadrantes claros: priorizar o que entrega muito com pouco esforço, planejar com cuidado o que é complexo mas estratégico, e postergar o que custa muito e retorna pouco.</p>
+    <p>O MoSCoW entrou como segunda camada para refinar essa ordenação, separando o que é indispensável para o app funcionar do que pode ser adicionado de forma incremental. O resultado foi uma sequência de desenvolvimento objetiva: primeiro o essencial e acessível, depois o estratégico e complexo, e por último o desejável mas não urgente.</p>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-cell">
+      <div class="stat-label">Total de Itens</div>
+      <div class="stat-number">35</div>
+      <div class="stat-sub">histórias de usuário</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-label">Must Have</div>
+      <div class="stat-number" style="color:#1a3a5c">17</div>
+      <div class="stat-sub">indispensáveis para o MVP</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-label">Should Have</div>
+      <div class="stat-number" style="color:#4a6741">15</div>
+      <div class="stat-sub">importantes, mas incrementais</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-label">Could Have</div>
+      <div class="stat-number" style="color:#7a5c32">3</div>
+      <div class="stat-sub">desejáveis se houver capacidade</div>
+    </div>
+  </div>
+
+  <!-- Epics Overview -->
+  <div class="epics-overview">
+    <div class="section-title">Épicos do Produto — visão geral</div>
+    <div class="epics-grid">
+      <div class="epic-card" onclick="scrollToEpic('epic1')">
+        <div class="epic-card-number">ÉPICO 01</div>
+        <div class="epic-card-name">Autenticação e Perfil do Usuário</div>
+        <div class="epic-card-desc">Cadastro, login, seleção e troca do deputado acompanhado, e personalização do perfil.</div>
+        <div class="epic-card-meta"><span class="epic-pill">5 itens</span><span>3 Must · 2 Should</span><span class="epic-arrow">→</span></div>
+      </div>
+      <div class="epic-card" onclick="scrollToEpic('epic2')">
+        <div class="epic-card-number">ÉPICO 02</div>
+        <div class="epic-card-name">Perfil do Deputado</div>
+        <div class="epic-card-desc">Informações institucionais do parlamentar: partido, estado, mandatos, equipe e comissões.</div>
+        <div class="epic-card-meta"><span class="epic-pill">5 itens</span><span>1 Must · 3 Should · 1 Could</span><span class="epic-arrow">→</span></div>
+      </div>
+      <div class="epic-card" onclick="scrollToEpic('epic3')">
+        <div class="epic-card-number">ÉPICO 03</div>
+        <div class="epic-card-name">Atividade Parlamentar</div>
+        <div class="epic-card-desc">Votações em plenário, presença nas sessões, projetos submetidos e participação em comissões.</div>
+        <div class="epic-card-meta"><span class="epic-pill">5 itens</span><span>3 Must · 2 Should</span><span class="epic-arrow">→</span></div>
+      </div>
+      <div class="epic-card" onclick="scrollToEpic('epic4')">
+        <div class="epic-card-number">ÉPICO 04</div>
+        <div class="epic-card-name">Financeiro e Transparência</div>
+        <div class="epic-card-desc">Cota parlamentar, despesas por categoria, emendas destinadas e financiamento de campanha.</div>
+        <div class="epic-card-meta"><span class="epic-pill">5 itens</span><span>3 Must · 1 Should · 1 Could</span><span class="epic-arrow">→</span></div>
+      </div>
+      <div class="epic-card" onclick="scrollToEpic('epic5')">
+        <div class="epic-card-number">ÉPICO 05</div>
+        <div class="epic-card-name">Indicadores de Desempenho</div>
+        <div class="epic-card-desc">KPIs objetivos do mandato: taxa de presença, aprovação de projetos, execução de emendas e alinhamento partidário.</div>
+        <div class="epic-card-meta"><span class="epic-pill">5 itens</span><span>2 Must · 3 Should</span><span class="epic-arrow">→</span></div>
+      </div>
+      <div class="epic-card" onclick="scrollToEpic('epic6')">
+        <div class="epic-card-number">ÉPICO 06</div>
+        <div class="epic-card-name">Comparativos e Médias</div>
+        <div class="epic-card-desc">Comparação do deputado com outro parlamentar específico ou com as médias gerais da Câmara Federal.</div>
+        <div class="epic-card-meta"><span class="epic-pill">5 itens</span><span>3 Must · 2 Should</span><span class="epic-arrow">→</span></div>
+      </div>
+      <div class="epic-card" onclick="scrollToEpic('epic7')">
+        <div class="epic-card-number">ÉPICO 07</div>
+        <div class="epic-card-name">Notificações e Alertas</div>
+        <div class="epic-card-desc">Alertas em tempo real sobre votações, faltas, novos projetos e movimentações de emendas.</div>
+        <div class="epic-card-meta"><span class="epic-pill">5 itens</span><span>2 Must · 2 Should · 1 Could</span><span class="epic-arrow">→</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Divider -->
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-label">Product Backlog Completo</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-group">
+      <div class="legend-title">MoSCoW</div>
+      <div class="legend-items">
+        <div class="legend-item"><div class="ldot" style="background:var(--must)"></div>Must Have</div>
+        <div class="legend-item"><div class="ldot" style="background:var(--should)"></div>Should Have</div>
+        <div class="legend-item"><div class="ldot" style="background:var(--could)"></div>Could Have</div>
+      </div>
+    </div>
+    <div class="legend-group">
+      <div class="legend-title">Quadrante Valor × Esforço</div>
+      <div class="legend-items">
+        <div class="legend-item"><div class="ldot q1-dot"></div>Prioridade máxima</div>
+        <div class="legend-item"><div class="ldot q2-dot"></div>Grandes apostas</div>
+        <div class="legend-item"><div class="ldot q3-dot"></div>Preenche sprint</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters">
+    <button class="filter-btn active" onclick="filterAll(this)">Todos</button>
+    <button class="filter-btn" onclick="filterBy(this,'must')">Must Have</button>
+    <button class="filter-btn" onclick="filterBy(this,'should')">Should Have</button>
+    <button class="filter-btn" onclick="filterBy(this,'could')">Could Have</button>
+    <button class="filter-btn" onclick="filterBy(this,'q1')">Prioridade Máxima</button>
+    <button class="filter-btn" onclick="filterBy(this,'q2')">Grandes Apostas</button>
+    <button class="filter-btn" onclick="filterBy(this,'q3')">Preenche Sprint</button>
+  </div>
+
+  <!-- ── EPIC 1 ── -->
+  <div class="epic-section" id="epic1">
+    <div class="epic-header">
+      <span class="epic-header-num">ÉPICO 01</span>
+      <span class="epic-header-name">Autenticação e Perfil do Usuário</span>
+      <span class="epic-header-count">5 itens</span>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>#</th><th>História de Usuário</th><th>Valor</th><th>Esforço</th><th>Quadrante</th><th>MoSCoW</th></tr></thead>
+      <tbody>
+        <tr data-moscow="must" data-quadrant="q1"><td class="num">01</td><td class="story-text">Como usuário novo, eu quero criar uma conta com e-mail e senha, para acessar o app e salvar minhas preferências.</td><td><span class="val val-alto">Alto</span></td><td><span class="val val-baixo">Baixo</span></td><td><div class="q-badge"><span class="q-dot q1-dot"></span>Prioridade máxima</div></td><td><span class="badge badge-must">Must Have</span></td></tr>
+        <tr data-moscow="must" data-quadrant="q1"><td class="num">02</td><td class="story-text">Como usuário cadastrado, eu quero fazer login de forma rápida, para retomar meu acompanhamento sem precisar reconfigurar o app.</td><td><span class="val val-alto">Alto</span></td><td><span class="val val-baixo">Baixo</span></td><td><div class="q-badge"><span class="q-dot q1-dot"></span>Prioridade máxima</div></td><td><span class="badge badge-must">Must Have</span></td></tr>
+        <tr data-moscow="must" data-quadrant="q1"><td class="num">03</td><td class="story-text">Como usuário, eu quero selecionar o deputado federal que desejo acompanhar, para personalizar minha experiência no app.</td><td><span class="val val-alto">Alto</span></td><td><span class="val val-baixo">Baixo</span></td><td><div class="q-badge"><span class="q-dot q1-dot"></span>Prioridade máxima</div></td><td><span class="badge badge-must">Must Have</span></td></tr>
+        <tr data-moscow="should" data-quadrant="q1"><td class="num">04</td><td class="story-text">Como usuário, eu quero trocar o deputado acompanhado a qualquer momento, para explorar o perfil de outros parlamentares quando desejar.</td><td><span class="val val-medio">Médio</span></td><td><span class="val val-baixo">Baixo</span></td><td><div class="q-badge"><span class="q-dot q1-dot"></span>Prioridade máxima</div></td><td><span class="badge badge-should">Should Have</span></td></tr>
+        <tr data-moscow="should" data-quadrant="q1"><td class="num">05</td><td class="story-text">Como usuário, eu quero editar meu perfil e preferências de notificação, para controlar como e quando o app se comunica comigo.</td><td><span class="val val-medio">Médio</span></td><td><span class="val val-baixo">Baixo</span></td><td><div class="q-badge"><span class="q-dot q1-dot"></span>Prioridade máxima</div></td><td><span class="badge badge-should">Should Have</span></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <!-- ── EPIC 2 ── -->
+  <div class="epic-section" id="epic2">
+    <div class="epic-header">
+      <span class="epic-header-num">ÉPICO 02</span>
+      <span class="epic-header-name">Perfil do Deputado</span>
+      <span class="epic-header-count">5 itens</span>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>#</th><th>História de Usuário</th><th>Valor</th><th>Esforço</th><th>Quadrante</th><th>MoSCoW</th></tr></thead>
+      <tbody>
+        <tr data-moscow="must" data-quadrant="q1"><td class="num">06</td><td class="story-text">Como usuário, eu quero visualizar a foto, nome, partido e estado do deputado selecionado, para identificar rapidamente quem estou acompanhando.</td><td><span class="val val-alto">Alto</span></td><td><span class="val val-baixo">Baixo</span></td><td><div class="q-badge"><span class="q-dot q1-dot"></span>Prioridade máxima</div></td><td><span class="badge badge-must">Must Have</span></td></tr>
+        <tr data-moscow="should" data-quadrant="q1"><td class="num">07</td><td class="story-text">Como usuário, eu quero acessar a biografia e o histórico de mandatos anteriores do deputado, para entender sua trajetória política.</td><td><span class="val val-medio">Médio</span></td><td><span class="val val-baixo">Baixo</span></td><td><div class="q-badge"><span class="q-dot q1-dot"></span>Prioridade máxima</div></td><td><span class="badge badge-should">Should Have</span></td></tr>
+        <tr data-moscow="should" data-quadrant="q1"><td class="num">08</td><td class="story-text">Como usuário, eu quero ver os contatos oficiais do gabinete do deputado, para saber como entrar em contato com o parlamentar se necessário.</td><td><span class="val val-medio">Médio</span></td><td><span class="val val-baixo">Baixo</span></td><td><div class="q-badge"><span class="q-dot q1-dot"></span>Prioridade máxima</div></td><td><span class="badge badge-should">Should Have</span></td></tr>
+        <tr data-moscow="could" data-quadrant="q3"><td class="num">09</td><td class="story-text">Como usuário, eu quero ver a composição da equipe do gabinete, para saber quem trabalha em nome do deputado que acompanho.</td><td><span class="val val-baixo">Baixo</span></td><td><span class="val val-baixo">Baixo</span></td><td><div class="q-badge"><span class="q-dot q3-dot"></span>Preenche sprint</div></td><td><span class="badge badge-could">Could Have</span></td></tr>
+        <tr data-moscow="should" data-quadrant="q1"><td class="num">10</td><td class="story-text">Como usuário, eu quero visualizar as comissões das quais o deputado faz parte, para entender em quais áreas temáticas ele atua.</td><td><span class="val val-medio">Médio</span></td><td><span class="val val-baixo">Baixo</span></td><td><div class="q-badge"><span class="q-dot q1-dot"></span>Prioridade máxima</div></td><td><span class="badge badge-should">Should Have</span></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <!-- ── EPIC 3 ── -->
+  <div class="epic-section" id="epic3">
+    <div class="epic-header">
+      <span class="epic-header-num">ÉPICO 03</span>
+      <span class="epic-header-name">Atividade Parlamentar</span>
+      <span class="epic-header-count">5 itens</span>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>#</th><th>História de Usuário</th><th>Valor</th><th>Esforço</th><th>Quadrante</th><th>MoSCoW</th></tr></thead>
+      <tbody>
+        <tr data-moscow="must" data-quadrant="q1"><td class="num">11</td><td class="story-text">Como usuário, eu quero ver o histórico de votações do deputado em plenário, para saber como ele votou em cada projeto relevante.</td><td><span class="val val-alto">Alto</span></td><td><span class="val val-medio">Médio</span></td><td><div class="q-badge"><span class="q-dot q1-dot"></span>Prioridade máxima</div></td><td><span class="badge badge-must">Must Have</span></td></tr>
+        <tr data-moscow="must" data-quadrant="q1"><td class="num">12</td><td class="story-text">Como usuário, eu quero acompanhar o registro de presença do deputado nas sessões, para avaliar seu comprometimento com o trabalho legislativo.</td><td><span class="val val-alto">Alto</span></td><td><span class="val val-baixo">Baixo</span></td><td><div class="q-badge"><span class="q-dot q1-dot"></span>Prioridade máxima</div></td><td><span class="badge badge-must">Must Have</span></td></tr>
+        <tr data-moscow="must" data-quadrant="q1"><td class="num">13</td><td class="story-text">Como usuário, eu quero visualizar os projetos de lei submetidos pelo deputado, para entender quais pautas ele está propondo.</td><td><span class="val val-alto">Alto</span></td><td><span class="val val-medio">Médio</span></td><td><div class="q-badge"><span class="q-dot q1-dot"></span>Prioridade máxima</div></td><td><span class="badge badge-must">Must Have</span></td></tr>
+        <tr data-moscow="should" data-quadrant="q2"><td class="num">14</td><td class="story-text">Como usuário, eu quero filtrar a atividade parlamentar por período de tempo, para acompanhar o que o deputado fez em um intervalo específico.</td><td><span class="val val-medio">Médio</span></td><td><span class="val val-medio">Médio</span></td><td><div class="q-badge"><span class="q-dot q2-dot"></span>Grandes apostas</div></td><td><span class="badge badge-should">Should Have</span></td></tr>
+        <tr data-moscow="should" data-quadrant="q1"><td class="num">15</td><td class="story-text">Como usuário, eu quero ver a participação do deputado nas comissões temáticas, para entender em quais debates ele está efetivamente presente.</td><td><span class="val val-medio">Médio</span></td><td><span class="val val-baixo">Baixo</span></td><td><div class="q-badge"><span class="q-dot q1-dot"></span>Prioridade máxima</div></td><td><span class="badge badge-should">Should Have</span></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <!-- ── EPIC 4 ── -->
+  <div class="epic-section" id="epic4">
+    <div class="epic-header">
+      <span class="epic-header-num">ÉPICO 04</span>
+      <span class="epic-header-name">Financeiro e Transparência</span>
+      <span class="epic-header-count">5 itens</span>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>#</th><th>História de Usuário</th><th>Valor</th><th>Esforço</th><th>Quadrante</th><th>MoSCoW</th></tr></thead>
+      <tbody>
+        <tr data-moscow="must" data-quadrant="q1"><td class="num">16</td><td class="story-text">Como usuário, eu quero visualizar o total gasto pelo deputado com a cota parlamentar, para saber como o dinheiro público está sendo utilizado.</td><td><span class="val val-alto">Alto</span></td><td><span class="val val-medio">Médio</span></td><td><div class="q-badge"><span class="q-dot q1-dot"></span>Prioridade máxima</div></td><td><span class="badge badge-must">Must Have</span></td></tr>
+        <tr data-moscow="must" data-quadrant="q1"><td class="num">17</td><td class="story-text">Como usuário, eu quero ver o detalhamento das despesas do gabinete por categoria, para entender em que tipos de gasto o dinheiro foi aplicado.</td><td><span class="val val-alto">Alto</span></td><td><span class="val val-medio">Médio</span></td><td><div class="q-badge"><span class="q-dot q1-dot"></span>Prioridade máxima</div></td><td><span class="badge badge-must">Must Have</span></td></tr>
+        <tr data-moscow="must" data-quadrant="q1"><td class="num">18</td><td class="story-text">Como usuário, eu quero acompanhar as emendas parlamentares destinadas pelo deputado, para saber quais municípios e áreas foram beneficiados.</td><td><span class="val val-alto">Alto</span></td><td><span class="val val-medio">Médio</span></td><td><div class="q-badge"><span class="q-dot q1-dot"></span>Prioridade máxima</div></td><td><span class="badge badge-must">Must Have</span></td></tr>
+        <tr data-moscow="should" data-quadrant="q2"><td class="num">19</td><td class="story-text">Como usuário, eu quero ver o índice de execução das emendas destinadas, para saber se o dinheiro destinado pelo deputado foi de fato utilizado.</td><td><span class="val val-alto">Alto</span></td><td><span class="val val-alto">Alto</span></td><td><div class="q-badge"><span class="q-dot q2-dot"></span>Grandes apostas</div></td><td><span class="badge badge-should">Should Have</span></td></tr>
+        <tr data-moscow="could" data-quadrant="q2"><td class="num">20</td><td class="story-text">Como usuário, eu quero consultar as fontes de financiamento da campanha do deputado, para conhecer quem financiou sua eleição.</td><td><span class="val val-medio">Médio</span></td><td><span class="val val-medio">Médio</span></td><td><div class="q-badge"><span class="q-dot q2-dot"></span>Grandes apostas</div></td><td><span class="badge badge-could">Could Have</span></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <!-- ── EPIC 5 ── -->
+  <div class="epic-section" id="epic5">
+    <div class="epic-header">
+      <span class="epic-header-num">ÉPICO 05</span>
+      <span class="epic-header-name">Indicadores de Desempenho</span>
+      <span class="epic-header-count">5 itens</span>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>#</th><th>História de Usuário</th><th>Valor</th><th>Esforço</th><th>Quadrante</th><th>MoSCoW</th></tr></thead>
+      <tbody>
+        <tr data-moscow="must" data-quadrant="q1"><td class="num">21</td><td class="story-text">Como usuário, eu quero ver a taxa de presença do deputado nas sessões plenárias, para avaliar objetivamente seu comprometimento com o mandato.</td><td><span class="val val-alto">Alto</span></td><td><span class="val val-medio">Médio</span></td><td><div class="q-badge"><span class="q-dot q1-dot"></span>Prioridade máxima</div></td><td><span class="badge badge-must">Must Have</span></td></tr>
+        <tr data-moscow="should" data-quadrant="q2"><td class="num">22</td><td class="story-text">Como usuário, eu quero visualizar o índice de aprovação dos projetos submetidos pelo deputado, para entender sua efetividade legislativa.</td><td><span class="val val-alto">Alto</span></td><td><span class="val val-alto">Alto</span></td><td><div class="q-badge"><span class="q-dot q2-dot"></span>Grandes apostas</div></td><td><span class="badge badge-should">Should Have</span></td></tr>
+        <tr data-moscow="should" data-quadrant="q2"><td class="num">23</td><td class="story-text">Como usuário, eu quero acompanhar a taxa de execução das emendas parlamentares do deputado, para avaliar se suas destinações estão sendo convertidas em ação concreta.</td><td><span class="val val-alto">Alto</span></td><td><span class="val val-alto">Alto</span></td><td><div class="q-badge"><span class="q-dot q2-dot"></span>Grandes apostas</div></td><td><span class="badge badge-should">Should Have</span></td></tr>
+        <tr data-moscow="should" data-quadrant="q2"><td class="num">24</td><td class="story-text">Como usuário, eu quero ver o índice de alinhamento de votos do deputado com o posicionamento oficial do seu partido, para identificar coerências ou divergências entre o parlamentar e sua legenda.</td><td><span class="val val-alto">Alto</span></td><td><span class="val val-alto">Alto</span></td><td><div class="q-badge"><span class="q-dot q2-dot"></span>Grandes apostas</div></td><td><span class="badge badge-should">Should Have</span></td></tr>
+        <tr data-moscow="must" data-quadrant="q2"><td class="num">25</td><td class="story-text">Como usuário, eu quero visualizar um painel consolidado com todos os indicadores de desempenho do deputado, para ter uma visão geral e rápida da qualidade do mandato.</td><td><span class="val val-alto">Alto</span></td><td><span class="val val-alto">Alto</span></td><td><div class="q-badge"><span class="q-dot q2-dot"></span>Grandes apostas</div></td><td><span class="badge badge-must">Must Have</span></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <!-- ── EPIC 6 ── -->
+  <div class="epic-section" id="epic6">
+    <div class="epic-header">
+      <span class="epic-header-num">ÉPICO 06</span>
+      <span class="epic-header-name">Comparativos e Médias</span>
+      <span class="epic-header-count">5 itens</span>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>#</th><th>História de Usuário</th><th>Valor</th><th>Esforço</th><th>Quadrante</th><th>MoSCoW</th></tr></thead>
+      <tbody>
+        <tr data-moscow="must" data-quadrant="q1"><td class="num">26</td><td class="story-text">Como usuário, eu quero comparar a taxa de presença do deputado acompanhado com a média geral da Câmara, para contextualizar seu desempenho em relação aos demais.</td><td><span class="val val-alto">Alto</span></td><td><span class="val val-medio">Médio</span></td><td><div class="q-badge"><span class="q-dot q1-dot"></span>Prioridade máxima</div></td><td><span class="badge badge-must">Must Have</span></td></tr>
+        <tr data-moscow="should" data-quadrant="q2"><td class="num">27</td><td class="story-text">Como usuário, eu quero comparar os indicadores do meu deputado com os de outro parlamentar específico, para fazer uma análise lado a lado entre dois representantes.</td><td><span class="val val-alto">Alto</span></td><td><span class="val val-alto">Alto</span></td><td><div class="q-badge"><span class="q-dot q2-dot"></span>Grandes apostas</div></td><td><span class="badge badge-should">Should Have</span></td></tr>
+        <tr data-moscow="must" data-quadrant="q1"><td class="num">28</td><td class="story-text">Como usuário, eu quero ver como o deputado se posiciona em relação à média de gastos com cota parlamentar, para avaliar se seu uso de recursos é proporcional.</td><td><span class="val val-alto">Alto</span></td><td><span class="val val-medio">Médio</span></td><td><div class="q-badge"><span class="q-dot q1-dot"></span>Prioridade máxima</div></td><td><span class="badge badge-must">Must Have</span></td></tr>
+        <tr data-moscow="should" data-quadrant="q2"><td class="num">29</td><td class="story-text">Como usuário, eu quero comparar o volume de projetos submetidos pelo deputado com a média da Câmara, para entender sua produtividade legislativa relativa.</td><td><span class="val val-medio">Médio</span></td><td><span class="val val-medio">Médio</span></td><td><div class="q-badge"><span class="q-dot q2-dot"></span>Grandes apostas</div></td><td><span class="badge badge-should">Should Have</span></td></tr>
+        <tr data-moscow="must" data-quadrant="q2"><td class="num">30</td><td class="story-text">Como usuário, eu quero visualizar os comparativos em formato gráfico, para facilitar a leitura e interpretação dos dados.</td><td><span class="val val-alto">Alto</span></td><td><span class="val val-alto">Alto</span></td><td><div class="q-badge"><span class="q-dot q2-dot"></span>Grandes apostas</div></td><td><span class="badge badge-must">Must Have</span></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <!-- ── EPIC 7 ── -->
+  <div class="epic-section" id="epic7">
+    <div class="epic-header">
+      <span class="epic-header-num">ÉPICO 07</span>
+      <span class="epic-header-name">Notificações e Alertas</span>
+      <span class="epic-header-count">5 itens</span>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>#</th><th>História de Usuário</th><th>Valor</th><th>Esforço</th><th>Quadrante</th><th>MoSCoW</th></tr></thead>
+      <tbody>
+        <tr data-moscow="must" data-quadrant="q1"><td class="num">31</td><td class="story-text">Como usuário, eu quero receber uma notificação quando o deputado acompanhado votar em plenário, para ser informado em tempo real sobre suas decisões.</td><td><span class="val val-alto">Alto</span></td><td><span class="val val-medio">Médio</span></td><td><div class="q-badge"><span class="q-dot q1-dot"></span>Prioridade máxima</div></td><td><span class="badge badge-must">Must Have</span></td></tr>
+        <tr data-moscow="must" data-quadrant="q1"><td class="num">32</td><td class="story-text">Como usuário, eu quero ser alertado quando o deputado faltar a uma sessão, para acompanhar sua frequência de forma passiva e contínua.</td><td><span class="val val-alto">Alto</span></td><td><span class="val val-medio">Médio</span></td><td><div class="q-badge"><span class="q-dot q1-dot"></span>Prioridade máxima</div></td><td><span class="badge badge-must">Must Have</span></td></tr>
+        <tr data-moscow="should" data-quadrant="q2"><td class="num">33</td><td class="story-text">Como usuário, eu quero receber um aviso quando um novo projeto de lei for submetido pelo deputado, para acompanhar suas iniciativas legislativas assim que surgirem.</td><td><span class="val val-medio">Médio</span></td><td><span class="val val-medio">Médio</span></td><td><div class="q-badge"><span class="q-dot q2-dot"></span>Grandes apostas</div></td><td><span class="badge badge-should">Should Have</span></td></tr>
+        <tr data-moscow="could" data-quadrant="q3"><td class="num">34</td><td class="story-text">Como usuário, eu quero ser notificado sobre movimentações nas emendas parlamentares do deputado, para saber quando novas destinações forem registradas ou executadas.</td><td><span class="val val-medio">Médio</span></td><td><span class="val val-medio">Médio</span></td><td><div class="q-badge"><span class="q-dot q3-dot"></span>Preenche sprint</div></td><td><span class="badge badge-could">Could Have</span></td></tr>
+        <tr data-moscow="should" data-quadrant="q1"><td class="num">35</td><td class="story-text">Como usuário, eu quero configurar quais tipos de notificação desejo receber, para evitar excesso de alertas e focar no que é mais relevante para mim.</td><td><span class="val val-medio">Médio</span></td><td><span class="val val-baixo">Baixo</span></td><td><div class="q-badge"><span class="q-dot q1-dot"></span>Prioridade máxima</div></td><td><span class="badge badge-should">Should Have</span></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <footer>
+    <div class="footer-left">UNDB · Gestão Ágil de Projetos · 2026.1 · Product Backlog v1.0</div>
+  </footer>
+
+</div>
+
+<script>
+  function filterAll(btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('tbody tr').forEach(r => r.classList.remove('hidden'));
+    document.querySelectorAll('.epic-section').forEach(s => s.style.display = '');
+  }
+
+  function filterBy(btn, key) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('tbody tr').forEach(r => {
+      const match = r.dataset.moscow === key || r.dataset.quadrant === key;
+      r.classList.toggle('hidden', !match);
+    });
+    // Hide epic sections where all rows are hidden
+    document.querySelectorAll('.epic-section').forEach(section => {
+      const rows = section.querySelectorAll('tbody tr');
+      const allHidden = Array.from(rows).every(r => r.classList.contains('hidden'));
+      section.style.display = allHidden ? 'none' : '';
+    });
+  }
+
+  function scrollToEpic(id) {
+    const target = document.getElementById(id);
+    if (!target) return;
+    // Ensure all rows visible
+    document.querySelectorAll('tbody tr').forEach(r => r.classList.remove('hidden'));
+    document.querySelectorAll('.epic-section').forEach(s => s.style.display = '');
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.filter-btn').classList.add('active');
+    // Scroll
+    const offset = 32;
+    const top = target.getBoundingClientRect().top + window.scrollY - offset;
+    window.scrollTo({ top, behavior: 'smooth' });
+    // Briefly highlight
+    target.classList.add('highlight');
+    setTimeout(() => target.classList.remove('highlight'), 1800);
+  }
+</script>
+</body>
+</html>
